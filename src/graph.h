@@ -43,6 +43,7 @@ public:
     void AddEdge(unsigned int parentId, unsigned int childId);
 
     void Translate(QPointF offset);
+    Node *GetNode(QPointF windowPosition, int width, int height);
 
 protected:
     std::vector<Node *> nodes_;

@@ -57,12 +57,16 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
     }
     else if (event->button() == Qt::RightButton)
     {
-        Node *n = new Node();
-        n->id = nextId_;
-        n->position = event->pos();
-        graph_.AddNode(n);
-        graph_.AddEdge(1, n->id);
-        nextId_ ++;
+        Node *parent = graph_.GetNode(event->pos(), geometry().width(), geometry().height());
+        if (parent != nullptr)
+        {
+            Node *n = new Node();
+            n->id = nextId_;
+            n->position = parent->position + QPointF(10, 10);
+            graph_.AddNode(n);
+            graph_.AddEdge(parent->id, n->id);
+            nextId_ ++;
+        }
     }
 }
 

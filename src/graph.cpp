@@ -104,3 +104,27 @@ void Graph::Translate(QPointF offset)
     viewY_ += offset.ry();
 }
 
+Node *Graph::GetNode(QPointF windowPosition, int width, int height)
+{
+    QTransform transform;
+    transform.scale(1.0 / scale_, 1.0 / scale_);
+    transform.translate(-viewX_, -viewY_);
+    transform.translate(-width / 2, -height / 2);
+
+    QPointF worldPosition = windowPosition * transform;
+
+    Node *result = nullptr;
+    for (auto n : nodes_)
+    {
+        QPointF v = n->position - worldPosition;
+        double d = v.rx() * v.rx() + v.ry() * v.ry();
+        if (d < 36)
+        {
+            result = n;
+            break;
+        }
+    }
+
+    return result;
+}
+
