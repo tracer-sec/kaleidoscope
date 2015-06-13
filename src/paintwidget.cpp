@@ -1,8 +1,10 @@
 #include "paintwidget.h"
 #include <QPainter>
+#include <QMenu>
 
 PaintWidget::PaintWidget(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),
+    animating_(true)
 {
     int i = 0;
 
@@ -30,12 +32,19 @@ PaintWidget::PaintWidget(QWidget *parent) :
 
     nextId_ = 4;
 
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
+            this, SLOT(showContextMenu(const QPoint &)));
 }
 
 void PaintWidget::animate()
 {
-    graph_.Iterate();
-    update();
+    if (animating_)
+    {
+        graph_.Iterate();
+        update();
+    }
 }
 
 void PaintWidget::paintEvent(QPaintEvent *event)
@@ -68,6 +77,13 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
             nextId_ ++;
         }
     }
+
+    animating_ = false;
+}
+
+void PaintWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+   animating_ = true;
 }
 
 void PaintWidget::mouseMoveEvent(QMouseEvent *event)
@@ -77,5 +93,41 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
         QPointF offset = event->pos() - startDrag_;
         graph_.Translate(offset);
         startDrag_ = event->pos();
+        update();
     }
+}
+
+void PaintWidget::showContextMenu(const QPoint &pos)
+{
+    Node *target = graph_.GetNode(pos, geometry().width(), geometry().height());
+
+    if (target != nullptr)
+    {
+        animating_ = false;
+
+        QMenu contextMenu(tr("Context menu"), this);
+
+        QAction action1("Remove node", this);
+        connect(&action1, &QAction::triggered, this, [this, &target]{ removeNode(target); });
+        contextMenu.addAction(&action1);
+
+        contextMenu.exec(mapToGlobal(pos));
+
+        connect(&contextMenu, SIGNAL(destroyed()), this, SLOT(resumeAnimation()));
+    }
+    else
+    {
+
+    }
+
+}
+
+void PaintWidget::removeNode(Node *target)
+{
+    graph_.RemoveNode(target);
+}
+
+void PaintWidget::resumeAnimation()
+{
+    animating_ = true;
 }

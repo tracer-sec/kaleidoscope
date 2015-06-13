@@ -42,6 +42,8 @@ public:
     void AddNode(Node *node);
     void AddEdge(unsigned int parentId, unsigned int childId);
 
+    void RemoveNode(Node *node);
+
     void Translate(QPointF offset);
     Node *GetNode(QPointF windowPosition, int width, int height);
 

@@ -1,8 +1,11 @@
 #include "graph.h"
+#include <algorithm>
 
 const double CHARGE = 1000;
 const double SPRING = 0.05;
 const double EQUILIBRIUM = 40.0;
+
+const int NODE_SIZE = 6;
 
 Graph::Graph() :
     viewX_(0),
@@ -33,7 +36,7 @@ void Graph::Render(QPainter &painter)
     painter.setBrush(nodeBrush_);
     for (auto node : nodes_)
     {
-        painter.drawEllipse(node->position, 6, 6);
+        painter.drawEllipse(node->position, NODE_SIZE, NODE_SIZE);
     }
 }
 
@@ -98,6 +101,13 @@ void Graph::AddEdge(unsigned int parentId, unsigned int childId)
     stable_ = false;
 }
 
+void Graph::RemoveNode(Node *node)
+{
+    nodes_.erase(remove(nodes_.begin(), nodes_.end(), node), nodes_.end());
+    edges_.erase(remove_if(edges_.begin(), edges_.end(), [&](Edge e) { return e.parent == node || e.child == node; }), edges_.end());
+    delete node;
+}
+
 void Graph::Translate(QPointF offset)
 {
     viewX_ += offset.rx();
@@ -118,7 +128,7 @@ Node *Graph::GetNode(QPointF windowPosition, int width, int height)
     {
         QPointF v = n->position - worldPosition;
         double d = v.rx() * v.rx() + v.ry() * v.ry();
-        if (d < 36)
+        if (d < NODE_SIZE * NODE_SIZE)
         {
             result = n;
             break;
