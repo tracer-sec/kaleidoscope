@@ -1,6 +1,9 @@
 #include "paintwidget.h"
 #include <QPainter>
 #include <QMenu>
+#include <QTransform>
+
+using namespace std;
 
 PaintWidget::PaintWidget(QWidget *parent) :
     QWidget(parent),
@@ -66,16 +69,7 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
     }
     else if (event->button() == Qt::RightButton)
     {
-        Node *parent = graph_.GetNode(event->pos(), geometry().width(), geometry().height());
-        if (parent != nullptr)
-        {
-            Node *n = new Node();
-            n->id = nextId_;
-            n->position = parent->position + QPointF(10, 10);
-            graph_.AddNode(n);
-            graph_.AddEdge(parent->id, n->id);
-            nextId_ ++;
-        }
+
     }
 
     animating_ = false;
@@ -110,6 +104,13 @@ void PaintWidget::showContextMenu(const QPoint &pos)
         QAction action1("Remove node", this);
         connect(&action1, &QAction::triggered, this, [this, &target]{ removeNode(target); });
         contextMenu.addAction(&action1);
+        contextMenu.addSeparator();
+
+        // Load valid actions
+        QAction action2("Some action", this);
+        connect(&action2, &QAction::triggered, this, [this, &target]{ performAction(target, "test"); });
+        contextMenu.addAction(&action2);
+
 
         contextMenu.exec(mapToGlobal(pos));
 
@@ -119,7 +120,6 @@ void PaintWidget::showContextMenu(const QPoint &pos)
     {
 
     }
-
 }
 
 void PaintWidget::removeNode(Node *target)
@@ -130,4 +130,26 @@ void PaintWidget::removeNode(Node *target)
 void PaintWidget::resumeAnimation()
 {
     animating_ = true;
+}
+
+void PaintWidget::performAction(Node *node, string action)
+{
+    if (action == "test")
+    {
+        int numNodes = static_cast<int>((static_cast<float>(qrand()) / RAND_MAX) * 5 + 1);
+        QPointF offset(0, -10);
+        QTransform transform;
+        transform.rotate(360.0 / numNodes);
+        for (int i = 0; i < numNodes; ++i)
+        {
+            Node *n = new Node();
+            n->id = nextId_;
+            n->position = node->position + offset;
+            graph_.AddNode(n);
+            graph_.AddEdge(node->id, n->id);
+
+            nextId_ ++;
+            offset = offset * transform;
+        }
+    }
 }

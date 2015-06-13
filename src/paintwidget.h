@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QMouseEvent>
+#include <string>
 #include "graph.h"
 
 class PaintWidget : public QWidget
@@ -18,6 +19,7 @@ public slots:
     void showContextMenu(const QPoint &pos);
     void removeNode(Node *node);
     void resumeAnimation();
+    void performAction(Node *node, std::string action);
 
 protected:
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
