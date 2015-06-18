@@ -1,9 +1,9 @@
 #include "graph.h"
 #include <algorithm>
 
-const double CHARGE = 1000;
-const double SPRING = 0.05;
-const double EQUILIBRIUM = 40.0;
+const double CHARGE = 750;
+const double SPRING = 0.1;
+const double EQUILIBRIUM = 60.0;
 
 const int NODE_SIZE = 6;
 
@@ -13,7 +13,8 @@ Graph::Graph() :
     scale_(1),
     stable_(true),
     edgePen_(Qt::black),
-    nodeBrush_(Qt::red)
+    nodeBrush_(Qt::red),
+    nextId_(1)
 {
     
 }
@@ -88,8 +89,10 @@ void Graph::Iterate()
 void Graph::AddNode(Node *node)
 {
     // TODO: check for duplicates
+    node->id = nextId_;
     nodes_.push_back(node);
     stable_ = false;
+    nextId_ ++;
 }
 
 void Graph::AddEdge(unsigned int parentId, unsigned int childId)

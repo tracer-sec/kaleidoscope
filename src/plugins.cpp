@@ -48,13 +48,13 @@ vector<string> Plugins::GetActions(string nodeType)
     return result;
 }
 
-PyObject *Plugins::RunPlugin(string pluginName, Node &node)
+vector<Node *> Plugins::RunPlugin(string pluginName, Node &node)
 {
     PyObject *args = Py_BuildValue("(s)", pluginName.c_str());
     PyObject *plugin = module_.CallFunction("fetch", args);
     Py_DECREF(args);
 
-    PyObject *result = nullptr;
+    vector<Node *> result;
 
     if (plugin)
     {
@@ -67,12 +67,14 @@ PyObject *Plugins::RunPlugin(string pluginName, Node &node)
             PyObject *pyNode = GetPythonNode(node);
 
             args = Py_BuildValue("(O)", pyNode);
-            result = PyObject_CallObject(func, args);
+            PyObject *data = PyObject_CallObject(func, args);
             Py_DECREF(args);
 
-            PyErr_Print();
+            size_t length = PyList_Size(data);
+            for (unsigned int i = 0; i < length; ++i)
+                result.push_back(GetNode(PyList_GetItem(data, i)));
 
-            // TODO: get changes from pyNode object?
+            Py_DECREF(data);
             Py_DECREF(pyNode);
         }
 
@@ -90,5 +92,14 @@ PyObject *Plugins::GetPythonNode(Node &n)
     PyObject *newNode = PyObject_CallObject(reinterpret_cast<PyObject *>(nodeClass_), newNodeArgs);
     Py_DECREF(newNodeArgs);
     return newNode;
+}
+
+Node *Plugins::GetNode(PyObject *n)
+{
+    Node *node = new Node();
+    node->name = Python::GetStringAttribute(n, "name");
+    node->type = Python::GetStringAttribute(n, "node_type");
+    node->data = Python::GetStringAttribute(n, "data_json");
+    return node;
 }
 

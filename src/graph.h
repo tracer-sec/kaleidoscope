@@ -57,6 +57,7 @@ protected:
 
     QPen edgePen_;
     QBrush nodeBrush_;
+    unsigned int nextId_;
 };
 
 #endif // GRAPH

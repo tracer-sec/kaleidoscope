@@ -5,6 +5,7 @@
 
 int main(int argc, char *argv[])
 {
+    // TODO: get this from a config file
     std::vector<std::string> paths = { "E:\\Tracer\\dev\\osint" };
     Python::InitPython(paths);
 

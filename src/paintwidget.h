@@ -30,7 +30,6 @@ protected:
 
     Graph graph_;
     QPointF startDrag_;
-    unsigned int nextId_;
     bool animating_;
     Plugins plugins_;
 };

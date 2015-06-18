@@ -11,37 +11,13 @@ PaintWidget::PaintWidget(QWidget *parent) :
     QWidget(parent),
     animating_(true)
 {
-    int i = 0;
-
     Node *n0 = new Node();
-    n0->id = 1;
-    n0->name = "test";
+    n0->name = "london2600";
     n0->type = "person";
     n0->position.setX(20);
     n0->position.setY(20);
 
-    Node *n1 = new Node();
-    n1->id = 2;
-    n1->name = "test";
-    n1->type = "twitter";
-    n1->position.setX(-20);
-    n1->position.setY(0);
-
-    Node *n2 = new Node();
-    n2->id = 3;
-    n2->name = "test@test.com";
-    n2->type = "email";
-    n2->position.setX(30);
-    n2->position.setY(10);
-
     graph_.AddNode(n0);
-    graph_.AddNode(n1);
-    graph_.AddNode(n2);
-    graph_.AddEdge(1, 2);
-    graph_.AddEdge(1, 3);
-    //graph_.AddEdge(2, 3);
-
-    nextId_ = 4;
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -133,7 +109,7 @@ void PaintWidget::showContextMenu(const QPoint &pos)
     }
     else
     {
-
+        // context menu of the canvas
     }
 }
 
@@ -149,27 +125,20 @@ void PaintWidget::resumeAnimation()
 
 void PaintWidget::performAction(Node *node, string action)
 {
-    if (action == "test")
-    {
-        int numNodes = static_cast<int>((static_cast<float>(qrand()) / RAND_MAX) * 5 + 1);
-        QPointF offset(0, -10);
-        QTransform transform;
-        transform.rotate(360.0 / numNodes);
-        for (int i = 0; i < numNodes; ++i)
-        {
-            Node *n = new Node();
-            n->id = nextId_;
-            n->position = node->position + offset;
-            graph_.AddNode(n);
-            graph_.AddEdge(node->id, n->id);
+    cout << action << endl;
+    vector<Node *> result = plugins_.RunPlugin(action, *node);
 
-            nextId_ ++;
-            offset = offset * transform;
-        }
-    }
-    else
+    int numNodes = result.size();
+    QPointF offset(0, -30);
+    QTransform transform;
+    transform.rotate(360.0 / numNodes);
+    for (int i = 0; i < numNodes; ++i)
     {
-        int i = 1;
-        cout << action << endl;
+        Node *n = result[i];
+        n->position = node->position + offset;
+        graph_.AddNode(n);
+        graph_.AddEdge(node->id, n->id);
+
+        offset = offset * transform;
     }
 }
