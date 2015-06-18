@@ -103,7 +103,7 @@ void Graph::AddEdge(unsigned int parentId, unsigned int childId)
 
 void Graph::RemoveNode(Node *node)
 {
-    nodes_.erase(remove(nodes_.begin(), nodes_.end(), node), nodes_.end());
+    nodes_.erase(std::remove(nodes_.begin(), nodes_.end(), node), nodes_.end());
     edges_.erase(remove_if(edges_.begin(), edges_.end(), [&](Edge e) { return e.parent == node || e.child == node; }), edges_.end());
     delete node;
 }

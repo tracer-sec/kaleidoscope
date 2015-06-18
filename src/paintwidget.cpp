@@ -13,16 +13,22 @@ PaintWidget::PaintWidget(QWidget *parent) :
 
     Node *n0 = new Node();
     n0->id = 1;
+    n0->name = "test";
+    n0->type = "person";
     n0->position.setX(20);
     n0->position.setY(20);
 
     Node *n1 = new Node();
     n1->id = 2;
+    n1->name = "test";
+    n1->type = "twitter";
     n1->position.setX(-20);
     n1->position.setY(0);
 
     Node *n2 = new Node();
     n2->id = 3;
+    n2->name = "test@test.com";
+    n2->type = "email";
     n2->position.setX(30);
     n2->position.setY(10);
 
@@ -111,6 +117,13 @@ void PaintWidget::showContextMenu(const QPoint &pos)
         connect(&action2, &QAction::triggered, this, [this, &target]{ performAction(target, "test"); });
         contextMenu.addAction(&action2);
 
+        auto actionNames = plugins_.GetActions(target->type);
+        for (string actionName : actionNames)
+        {
+            QAction *action = new QAction(actionName.c_str(), this);
+            connect(action, &QAction::triggered, this, [this, &target, &actionName]{ performAction(target, actionName); });
+            contextMenu.addAction(action);
+        }
 
         contextMenu.exec(mapToGlobal(pos));
 
@@ -151,5 +164,9 @@ void PaintWidget::performAction(Node *node, string action)
             nextId_ ++;
             offset = offset * transform;
         }
+    }
+    else
+    {
+        int i = 1;
     }
 }

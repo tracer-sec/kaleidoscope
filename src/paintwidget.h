@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include <string>
 #include "graph.h"
+#include "plugins.h"
 
 class PaintWidget : public QWidget
 {
@@ -31,6 +32,7 @@ protected:
     QPointF startDrag_;
     unsigned int nextId_;
     bool animating_;
+    Plugins plugins_;
 };
 
 #endif // PAINTWIDGET

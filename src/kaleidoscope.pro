@@ -15,10 +15,19 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     paintwidget.cpp \
-    graph.cpp
+    graph.cpp \
+    py.cpp \
+    plugins.cpp
 
 HEADERS  += mainwindow.h \
     paintwidget.h \
-    graph.h
+    graph.h \
+    py.h \
+    plugins.h
 
 FORMS    += mainwindow.ui
+
+win32 {
+    INCLUDEPATH += C:\Python27\include
+    LIBS += -LC:\Python27\libs -lpython27
+}

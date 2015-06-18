@@ -11,9 +11,9 @@
 struct Node
 {
     unsigned int id;
-    std::wstring name;
-    std::wstring type;
-    std::wstring data;
+    std::string name;
+    std::string type;
+    std::string data;
 
     QPointF position;
     QPointF force;
@@ -28,7 +28,7 @@ struct Edge
 
     Node *parent;
     Node *child;
-    std::wstring data;
+    std::string data;
 };
 
 class Graph
