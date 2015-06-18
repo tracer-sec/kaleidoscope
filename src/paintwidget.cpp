@@ -3,6 +3,8 @@
 #include <QMenu>
 #include <QTransform>
 
+#include <iostream>
+
 using namespace std;
 
 PaintWidget::PaintWidget(QWidget *parent) :
@@ -121,7 +123,7 @@ void PaintWidget::showContextMenu(const QPoint &pos)
         for (string actionName : actionNames)
         {
             QAction *action = new QAction(actionName.c_str(), this);
-            connect(action, &QAction::triggered, this, [this, &target, &actionName]{ performAction(target, actionName); });
+            connect(action, &QAction::triggered, this, [=, &target]{ performAction(target, actionName); });
             contextMenu.addAction(action);
         }
 
@@ -168,5 +170,6 @@ void PaintWidget::performAction(Node *node, string action)
     else
     {
         int i = 1;
+        cout << action << endl;
     }
 }
