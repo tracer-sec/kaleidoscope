@@ -44,15 +44,11 @@ public:
 
     void RemoveNode(Node *node);
 
-    void Translate(QPointF offset);
-    Node *GetNode(QPointF windowPosition, int width, int height);
+    Node *GetNode(QPointF worldPosition);
 
 protected:
     std::vector<Node *> nodes_;
     std::vector<Edge> edges_;
-    double viewX_;
-    double viewY_;
-    double scale_;
     bool stable_;
 
     QPen edgePen_;

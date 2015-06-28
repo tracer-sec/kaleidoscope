@@ -8,9 +8,6 @@ const double EQUILIBRIUM = 60.0;
 const int NODE_SIZE = 6;
 
 Graph::Graph() :
-    viewX_(0),
-    viewY_(0),
-    scale_(1),
     stable_(true),
     edgePen_(Qt::black),
     nodeBrush_(Qt::red),
@@ -21,13 +18,6 @@ Graph::Graph() :
 
 void Graph::Render(QPainter &painter)
 {
-    QTransform transform;
-    transform.translate(painter.device()->width() / 2, painter.device()->height() / 2);
-    transform.translate(viewX_, viewY_);
-    transform.scale(scale_, scale_);
-    
-    painter.setTransform(transform);
-    
     painter.setPen(edgePen_);
     for (auto edge : edges_)
     {
@@ -111,21 +101,8 @@ void Graph::RemoveNode(Node *node)
     delete node;
 }
 
-void Graph::Translate(QPointF offset)
+Node *Graph::GetNode(QPointF worldPosition)
 {
-    viewX_ += offset.rx();
-    viewY_ += offset.ry();
-}
-
-Node *Graph::GetNode(QPointF windowPosition, int width, int height)
-{
-    QTransform transform;
-    transform.scale(1.0 / scale_, 1.0 / scale_);
-    transform.translate(-viewX_, -viewY_);
-    transform.translate(-width / 2, -height / 2);
-
-    QPointF worldPosition = windowPosition * transform;
-
     Node *result = nullptr;
     for (auto n : nodes_)
     {

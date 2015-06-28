@@ -32,6 +32,10 @@ protected:
     QPointF startDrag_;
     bool animating_;
     Plugins plugins_;
+
+    double viewX_;
+    double viewY_;
+    double scale_;
 };
 
 #endif // PAINTWIDGET

@@ -9,7 +9,10 @@ using namespace std;
 
 PaintWidget::PaintWidget(QWidget *parent) :
     QWidget(parent),
-    animating_(true)
+    animating_(true),
+    viewX_(0),
+    viewY_(0),
+    scale_(1)
 {
     Node *n0 = new Node();
     n0->name = "london2600";
@@ -40,6 +43,13 @@ void PaintWidget::paintEvent(QPaintEvent *event)
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
+    QTransform transform;
+    transform.translate(painter.device()->width() / 2, painter.device()->height() / 2);
+    transform.translate(viewX_, viewY_);
+    transform.scale(scale_, scale_);
+
+    painter.setTransform(transform);
+
     graph_.Render(painter);
 
     painter.end();
@@ -69,7 +79,9 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
     if (event->buttons() & Qt::LeftButton)
     {
         QPointF offset = event->pos() - startDrag_;
-        graph_.Translate(offset);
+        viewX_ += offset.rx();
+        viewY_ += offset.ry();
+
         startDrag_ = event->pos();
         update();
     }
@@ -77,7 +89,13 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
 
 void PaintWidget::showContextMenu(const QPoint &pos)
 {
-    Node *target = graph_.GetNode(pos, geometry().width(), geometry().height());
+    QTransform transform;
+    transform.scale(1.0 / scale_, 1.0 / scale_);
+    transform.translate(-viewX_, -viewY_);
+    transform.translate(-geometry().width() / 2, -geometry().height() / 2);
+    QPointF worldPosition = pos * transform;
+
+    Node *target = graph_.GetNode(worldPosition);
 
     if (target != nullptr)
     {
