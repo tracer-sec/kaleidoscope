@@ -7,12 +7,16 @@
 
 using namespace std;
 
+const unsigned int NODE_SIZE = 6;
+
 PaintWidget::PaintWidget(QWidget *parent) :
     QWidget(parent),
     animating_(true),
     viewX_(0),
     viewY_(0),
-    scale_(1)
+    scale_(1),
+    edgePen_(Qt::black),
+    nodeBrush_(Qt::red)
 {
     Node *n0 = new Node();
     n0->name = "london2600";
@@ -50,7 +54,17 @@ void PaintWidget::paintEvent(QPaintEvent *event)
 
     painter.setTransform(transform);
 
-    graph_.Render(painter);
+    painter.setPen(edgePen_);
+    for (auto edge : graph_.GetEdges())
+    {
+        painter.drawLine(edge.parent->position, edge.child->position);
+    }
+
+    painter.setBrush(nodeBrush_);
+    for (auto node : graph_.GetNodes())
+    {
+        painter.drawEllipse(node->position, NODE_SIZE, NODE_SIZE);
+    }
 
     painter.end();
 }
@@ -95,7 +109,7 @@ void PaintWidget::showContextMenu(const QPoint &pos)
     transform.translate(-geometry().width() / 2, -geometry().height() / 2);
     QPointF worldPosition = pos * transform;
 
-    Node *target = graph_.GetNode(worldPosition);
+    Node *target = graph_.GetNode(worldPosition, NODE_SIZE);
 
     if (target != nullptr)
     {

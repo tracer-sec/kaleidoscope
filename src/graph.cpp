@@ -5,30 +5,11 @@ const double CHARGE = 750;
 const double SPRING = 0.1;
 const double EQUILIBRIUM = 60.0;
 
-const int NODE_SIZE = 6;
-
 Graph::Graph() :
     stable_(true),
-    edgePen_(Qt::black),
-    nodeBrush_(Qt::red),
     nextId_(1)
 {
     
-}
-
-void Graph::Render(QPainter &painter)
-{
-    painter.setPen(edgePen_);
-    for (auto edge : edges_)
-    {
-        painter.drawLine(edge.parent->position, edge.child->position);
-    }
-
-    painter.setBrush(nodeBrush_);
-    for (auto node : nodes_)
-    {
-        painter.drawEllipse(node->position, NODE_SIZE, NODE_SIZE);
-    }
 }
 
 void Graph::Iterate()
@@ -101,14 +82,14 @@ void Graph::RemoveNode(Node *node)
     delete node;
 }
 
-Node *Graph::GetNode(QPointF worldPosition)
+Node *Graph::GetNode(QPointF worldPosition, unsigned int nodeSize)
 {
     Node *result = nullptr;
     for (auto n : nodes_)
     {
         QPointF v = n->position - worldPosition;
         double d = v.rx() * v.rx() + v.ry() * v.ry();
-        if (d < NODE_SIZE * NODE_SIZE)
+        if (d < nodeSize * nodeSize)
         {
             result = n;
             break;

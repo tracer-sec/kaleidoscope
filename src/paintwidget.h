@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QMouseEvent>
+#include <QPen>
 #include <string>
 #include "graph.h"
 #include "plugins.h"
@@ -36,6 +37,9 @@ protected:
     double viewX_;
     double viewY_;
     double scale_;
+
+    QPen edgePen_;
+    QBrush nodeBrush_;
 };
 
 #endif // PAINTWIDGET

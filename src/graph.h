@@ -2,9 +2,6 @@
 #define GRAPH
 
 #include <QPointF>
-#include <QPen>
-#include <QBrush>
-#include <QPainter>
 #include <string>
 #include <vector>
 
@@ -36,7 +33,6 @@ class Graph
 public:
     Graph();
 
-    void Render(QPainter &painter);
     void Iterate();
 
     void AddNode(Node *node);
@@ -44,15 +40,15 @@ public:
 
     void RemoveNode(Node *node);
 
-    Node *GetNode(QPointF worldPosition);
+    Node *GetNode(QPointF worldPosition, unsigned int nodeSize);
+    std::vector<Node *> GetNodes() { return nodes_; }
+    std::vector<Edge> GetEdges() { return edges_; }
 
 protected:
     std::vector<Node *> nodes_;
     std::vector<Edge> edges_;
     bool stable_;
 
-    QPen edgePen_;
-    QBrush nodeBrush_;
     unsigned int nextId_;
 };
 
