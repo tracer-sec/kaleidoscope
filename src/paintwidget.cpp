@@ -47,12 +47,8 @@ void PaintWidget::paintEvent(QPaintEvent *event)
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    QTransform transform;
-    transform.translate(painter.device()->width() / 2, painter.device()->height() / 2);
-    transform.translate(viewX_, viewY_);
-    transform.scale(scale_, scale_);
-
-    painter.setTransform(transform);
+    UpdateWorldTransform();
+    painter.setTransform(transform_);
 
     painter.setPen(edgePen_);
     for (auto edge : graph_.GetEdges())
@@ -75,10 +71,6 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
     {
         startDrag_ = event->pos();
     }
-    else if (event->button() == Qt::RightButton)
-    {
-
-    }
 
     animating_ = false;
 }
@@ -93,8 +85,8 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
     if (event->buttons() & Qt::LeftButton)
     {
         QPointF offset = event->pos() - startDrag_;
-        viewX_ += offset.rx();
-        viewY_ += offset.ry();
+        viewX_ += offset.rx() / scale_;
+        viewY_ += offset.ry() / scale_;
 
         startDrag_ = event->pos();
         update();
@@ -103,11 +95,8 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
 
 void PaintWidget::showContextMenu(const QPoint &pos)
 {
-    QTransform transform;
-    transform.scale(1.0 / scale_, 1.0 / scale_);
-    transform.translate(-viewX_, -viewY_);
-    transform.translate(-geometry().width() / 2, -geometry().height() / 2);
-    QPointF worldPosition = pos * transform;
+    UpdateWorldTransform();
+    QPointF worldPosition = pos * transform_.inverted();
 
     Node *target = graph_.GetNode(worldPosition, NODE_SIZE);
 
@@ -123,10 +112,6 @@ void PaintWidget::showContextMenu(const QPoint &pos)
         contextMenu.addSeparator();
 
         // Load valid actions
-        QAction action2("Some action", this);
-        connect(&action2, &QAction::triggered, this, [this, &target]{ performAction(target, "test"); });
-        contextMenu.addAction(&action2);
-
         auto actionNames = plugins_.GetActions(target->type);
         for (string actionName : actionNames)
         {
@@ -173,4 +158,18 @@ void PaintWidget::performAction(Node *node, string action)
 
         offset = offset * transform;
     }
+}
+
+void PaintWidget::wheelEvent(QWheelEvent *event)
+{
+    double d = static_cast<double>(event->delta()) / 360 + 1;
+    scale_ *= d;
+}
+
+void PaintWidget::UpdateWorldTransform()
+{
+    transform_.reset();
+    transform_.translate(geometry().width() / 2, geometry().height() / 2);
+    transform_.scale(scale_, scale_);
+    transform_.translate(viewX_, viewY_);
 }

@@ -28,6 +28,9 @@ protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void wheelEvent(QWheelEvent *event) Q_DECL_OVERRIDE;
+
+    void UpdateWorldTransform();
 
     Graph graph_;
     QPointF startDrag_;
@@ -38,6 +41,7 @@ protected:
     double viewY_;
     double scale_;
 
+    QTransform transform_;
     QPen edgePen_;
     QBrush nodeBrush_;
 };
