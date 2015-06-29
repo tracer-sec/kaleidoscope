@@ -86,9 +86,7 @@ vector<Node *> Plugins::RunPlugin(string pluginName, Node &node)
 
 PyObject *Plugins::GetPythonNode(Node &n)
 {
-    // TODO: fix data creation (import via JSON)
-
-    PyObject *newNodeArgs = Py_BuildValue("ss", n.type.c_str(), n.name.c_str());
+    PyObject *newNodeArgs = Py_BuildValue("sssI", n.type.c_str(), n.name.c_str(), n.data.c_str(), n.id);
     PyObject *newNode = PyObject_CallObject(reinterpret_cast<PyObject *>(nodeClass_), newNodeArgs);
     Py_DECREF(newNodeArgs);
     return newNode;
