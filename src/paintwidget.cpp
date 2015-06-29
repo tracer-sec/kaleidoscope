@@ -15,12 +15,12 @@ PaintWidget::PaintWidget(QWidget *parent) :
     viewX_(0),
     viewY_(0),
     scale_(1),
-    edgePen_(Qt::black),
-    nodeBrush_(Qt::red)
+    edgePen_(Qt::black)
 {
     Node *n0 = new Node();
     n0->name = "london2600";
     n0->type = "person";
+    n0->data = "{}";
     n0->position.setX(20);
     n0->position.setY(20);
 
@@ -30,6 +30,15 @@ PaintWidget::PaintWidget(QWidget *parent) :
 
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
             this, SLOT(showContextMenu(const QPoint &)));
+
+    nodeBrushes_ = std::unordered_map<string, QBrush>({
+        { "DEFAULT", QBrush(Qt::gray) },
+        { "person", QBrush(Qt::red) },
+        { "twitter", QBrush(Qt::blue) },
+        { "reddit", QBrush(Qt::green) },
+        { "domain", QBrush(Qt::lightGray) },
+        { "email", QBrush(Qt::yellow) }
+    });
 }
 
 void PaintWidget::animate()
@@ -56,9 +65,13 @@ void PaintWidget::paintEvent(QPaintEvent *event)
         painter.drawLine(edge.parent->position, edge.child->position);
     }
 
-    painter.setBrush(nodeBrush_);
     for (auto node : graph_.GetNodes())
     {
+        auto brush = nodeBrushes_.find(node->type);
+        if (brush == nodeBrushes_.end())
+            painter.setBrush(nodeBrushes_["DEFAULT"]);
+        else
+            painter.setBrush((*brush).second);
         painter.drawEllipse(node->position, NODE_SIZE, NODE_SIZE);
     }
 
@@ -158,6 +171,8 @@ void PaintWidget::performAction(Node *node, string action)
 
         offset = offset * transform;
     }
+
+    // TODO: store changes to original node's data
 }
 
 void PaintWidget::wheelEvent(QWheelEvent *event)

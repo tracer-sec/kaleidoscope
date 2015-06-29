@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include <QPen>
 #include <string>
+#include <unordered_map>
 #include "graph.h"
 #include "plugins.h"
 
@@ -43,7 +44,7 @@ protected:
 
     QTransform transform_;
     QPen edgePen_;
-    QBrush nodeBrush_;
+    std::unordered_map<std::string, QBrush> nodeBrushes_;
 };
 
 #endif // PAINTWIDGET
