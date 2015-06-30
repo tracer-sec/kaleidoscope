@@ -35,12 +35,14 @@ public:
 
     void Iterate();
 
-    void AddNode(Node *node);
+    Node *AddNode(Node *node);
     void AddEdge(unsigned int parentId, unsigned int childId);
 
     void RemoveNode(Node *node);
 
     Node *GetNode(QPointF worldPosition, unsigned int nodeSize);
+    Node *GetNode(std::string type, std::string name);
+
     std::vector<Node *> GetNodes() { return nodes_; }
     std::vector<Edge> GetEdges() { return edges_; }
 

@@ -5,6 +5,8 @@ const double CHARGE = 750;
 const double SPRING = 0.1;
 const double EQUILIBRIUM = 60.0;
 
+using namespace std;
+
 Graph::Graph() :
     stable_(true),
     nextId_(1)
@@ -57,13 +59,18 @@ void Graph::Iterate()
     stable_ = tickMovement < 0.0001;
 }
 
-void Graph::AddNode(Node *node)
+Node *Graph::AddNode(Node *node)
 {
-    // TODO: check for duplicates
-    node->id = nextId_;
-    nodes_.push_back(node);
+    Node *n = GetNode(node->type, node->name);
+    if (n == nullptr)
+    {
+        node->id = nextId_;
+        nodes_.push_back(node);
+        nextId_ ++;
+        n = node;
+    }
     stable_ = false;
-    nextId_ ++;
+    return n;
 }
 
 void Graph::AddEdge(unsigned int parentId, unsigned int childId)
@@ -97,5 +104,11 @@ Node *Graph::GetNode(QPointF worldPosition, unsigned int nodeSize)
     }
 
     return result;
+}
+
+Node *Graph::GetNode(string type, string name)
+{
+    auto n = find_if(nodes_.begin(), nodes_.end(), [&](const Node *a) { return a->type == type && a->name == name; });
+    return n == nodes_.end() ? nullptr : *n;
 }
 

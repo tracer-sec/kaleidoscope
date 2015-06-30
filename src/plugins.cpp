@@ -74,6 +74,8 @@ vector<Node *> Plugins::RunPlugin(string pluginName, Node &node)
             for (unsigned int i = 0; i < length; ++i)
                 result.push_back(GetNode(PyList_GetItem(data, i)));
 
+            UpdateNode(pyNode, node);
+
             Py_DECREF(data);
             Py_DECREF(pyNode);
         }
@@ -99,5 +101,10 @@ Node *Plugins::GetNode(PyObject *n)
     node->type = Python::GetStringAttribute(n, "node_type");
     node->data = Python::GetStringAttribute(n, "data_json");
     return node;
+}
+
+void Plugins::UpdateNode(PyObject *p, Node &n)
+{
+    n.data = Python::GetStringAttribute(p, "data_json");
 }
 

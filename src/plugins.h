@@ -18,6 +18,7 @@ public:
 private:
     PyObject *GetPythonNode(Node &n);
     Node *GetNode(PyObject *n);
+    void UpdateNode(PyObject *p, Node &n);
 
     Python::PythonModule module_;
     PyTypeObject *nodeClass_;

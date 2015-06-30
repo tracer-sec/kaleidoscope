@@ -166,7 +166,7 @@ void PaintWidget::performAction(Node *node, string action)
     {
         Node *n = result[i];
         n->position = node->position + offset;
-        graph_.AddNode(n);
+        n = graph_.AddNode(n);
         graph_.AddEdge(node->id, n->id);
 
         offset = offset * transform;
