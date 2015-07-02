@@ -21,8 +21,8 @@ PaintWidget::PaintWidget(QWidget *parent) :
     n0->name = "london2600";
     n0->type = "person";
     n0->data = "{}";
-    n0->position.setX(20);
-    n0->position.setY(20);
+    n0->position.setX(0);
+    n0->position.setY(0);
 
     graph_.AddNode(n0);
 
