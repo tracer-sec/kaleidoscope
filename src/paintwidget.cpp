@@ -4,6 +4,7 @@
 #include <QTransform>
 
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -39,6 +40,8 @@ PaintWidget::PaintWidget(QWidget *parent) :
         { "domain", QBrush(Qt::lightGray) },
         { "email", QBrush(Qt::yellow) }
     });
+
+    setMouseTracking(true);
 }
 
 void PaintWidget::animate()
@@ -95,6 +98,17 @@ void PaintWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void PaintWidget::mouseMoveEvent(QMouseEvent *event)
 {
+    UpdateWorldTransform();
+    QPointF worldPosition = event->pos() * transform_.inverted();
+
+    Node *target = graph_.GetNode(worldPosition, NODE_SIZE);
+    ostringstream s;
+    if (target != nullptr)
+    {
+        s << target->type << " : " << target->name;
+    }
+    statusEvent(s.str());
+
     if (event->buttons() & Qt::LeftButton)
     {
         QPointF offset = event->pos() - startDrag_;
@@ -172,7 +186,9 @@ void PaintWidget::performAction(Node *node, string action)
         offset = offset * transform;
     }
 
-    // TODO: store changes to original node's data
+    ostringstream s;
+    s << numNodes << " new nodes added";
+    permanentStatusEvent(QString::fromUtf8(s.str().c_str()));
 }
 
 void PaintWidget::wheelEvent(QWheelEvent *event)

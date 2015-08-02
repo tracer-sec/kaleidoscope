@@ -24,6 +24,10 @@ public slots:
     void resumeAnimation();
     void performAction(Node *node, std::string action);
 
+signals:
+    void statusEvent(const std::string message);
+    void permanentStatusEvent(QString);
+
 protected:
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
