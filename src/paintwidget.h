@@ -26,7 +26,8 @@ public slots:
 
 signals:
     void statusEvent(const std::string message);
-    void permanentStatusEvent(QString);
+    void permanentStatusEvent(QString message);
+    void nodeSelectedEvent(const Node *node);
 
 protected:
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;

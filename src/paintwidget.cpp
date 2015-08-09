@@ -106,7 +106,10 @@ void PaintWidget::mouseReleaseEvent(QMouseEvent *event)
         QPointF worldPosition = event->pos() * transform_.inverted();
         Node *target = graph_.GetNode(worldPosition, NODE_SIZE);
         if (target != nullptr)
+        {
             selectedId_ = target->id;
+            nodeSelectedEvent(target);
+        }
     }
 
     animating_ = true;

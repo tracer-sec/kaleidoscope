@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <string>
+#include "graph.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,7 +18,8 @@ public:
     ~MainWindow();
 
 public slots:
-    void updateStatusBar(std::string text);
+    void updateStatusBar(const std::string text);
+    void updateNodeInfo(const Node *node);
 
 private slots:
     void on_actionExit_triggered();
