@@ -38,6 +38,7 @@ protected:
     void UpdateWorldTransform();
 
     Graph graph_;
+    unsigned int selectedId_;
     QPointF startDrag_;
     bool animating_;
     Plugins plugins_;

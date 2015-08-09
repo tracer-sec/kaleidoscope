@@ -16,7 +16,8 @@ PaintWidget::PaintWidget(QWidget *parent) :
     viewX_(0),
     viewY_(0),
     scale_(1),
-    edgePen_(Qt::black)
+    edgePen_(Qt::black),
+    selectedId_(0)
 {
     Node *n0 = new Node();
     n0->name = "london2600";
@@ -34,6 +35,7 @@ PaintWidget::PaintWidget(QWidget *parent) :
 
     nodeBrushes_ = std::unordered_map<string, QBrush>({
         { "DEFAULT", QBrush(Qt::gray) },
+        { "SELECTED", QBrush(Qt::white) },
         { "person", QBrush(Qt::red) },
         { "twitter", QBrush(Qt::blue) },
         { "reddit", QBrush(Qt::green) },
@@ -70,11 +72,16 @@ void PaintWidget::paintEvent(QPaintEvent *event)
 
     for (auto node : graph_.GetNodes())
     {
-        auto brush = nodeBrushes_.find(node->type);
-        if (brush == nodeBrushes_.end())
-            painter.setBrush(nodeBrushes_["DEFAULT"]);
+        if (node->id == selectedId_)
+            painter.setBrush(nodeBrushes_["SELECTED"]);
         else
-            painter.setBrush((*brush).second);
+        {
+            auto brush = nodeBrushes_.find(node->type);
+            if (brush == nodeBrushes_.end())
+                painter.setBrush(nodeBrushes_["DEFAULT"]);
+            else
+                painter.setBrush((*brush).second);
+        }
         painter.drawEllipse(node->position, NODE_SIZE, NODE_SIZE);
     }
 
@@ -93,7 +100,16 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
 
 void PaintWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-   animating_ = true;
+    if (event->button() == Qt::LeftButton)
+    {
+        UpdateWorldTransform();
+        QPointF worldPosition = event->pos() * transform_.inverted();
+        Node *target = graph_.GetNode(worldPosition, NODE_SIZE);
+        if (target != nullptr)
+            selectedId_ = target->id;
+    }
+
+    animating_ = true;
 }
 
 void PaintWidget::mouseMoveEvent(QMouseEvent *event)
