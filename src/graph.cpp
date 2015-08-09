@@ -32,6 +32,7 @@ void Graph::Iterate()
             v /= d;
             
             double push = CHARGE * 1.f / (d * d);
+            push = push > 5 ? 5 : push;
             n0->force += v * push;
             n1->force -= v * push;
         }
@@ -44,6 +45,7 @@ void Graph::Iterate()
         v /= d;
 
         double push = SPRING * (d - EQUILIBRIUM);
+        push = push > 5 ? 5 : push;
         e.parent->force += v * push;
         e.child->force -= v * push;
     }
