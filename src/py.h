@@ -22,6 +22,7 @@ namespace Python
         ~PythonModule();
 
         PyTypeObject *GetClass(std::string className);
+        PyObject *GetAttribute(std::string attributeName);
         PyObject *CallFunction(std::string functionName);
         PyObject *CallFunction(std::string functionName, PyObject *args);
 

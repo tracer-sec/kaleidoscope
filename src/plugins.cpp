@@ -15,10 +15,14 @@ Plugins::Plugins() :
     PythonModule model("model");
     Python::GetError();
     nodeClass_ = model.GetClass("Node");
+
+    catcher_ = module_.GetAttribute("log_dump");
 }
 
 Plugins::~Plugins()
 {
+    // Crash bang and wallop if this is here. Not sure why? :-/
+    //Py_DECREF(catcher_);
     Py_DECREF(nodeClass_);
 }
 
@@ -106,5 +110,13 @@ Node *Plugins::GetNode(PyObject *n)
 void Plugins::UpdateNode(PyObject *p, Node &n)
 {
     n.data = Python::GetStringAttribute(p, "data_json");
+}
+
+string Plugins::GetLog()
+{
+    PyObject *output = PyObject_GetAttrString(catcher_, "value");
+    string log(PyString_AsString(output));
+    Py_DECREF(output);
+    return log;
 }
 

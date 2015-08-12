@@ -208,6 +208,7 @@ void PaintWidget::performAction(Node *node, string action)
     ostringstream s;
     s << numNodes << " new nodes added";
     permanentStatusEvent(QString::fromUtf8(s.str().c_str()));
+    logEvent(plugins_.GetLog());
 }
 
 void PaintWidget::wheelEvent(QWheelEvent *event)

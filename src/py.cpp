@@ -16,6 +16,23 @@ void Python::InitPython(vector<string> paths)
         Py_DECREF(p);
     }
 
+    // https://stackoverflow.com/questions/4307187/how-to-catch-python-stdout-in-c-code
+    std::string stdOutErr =
+    "import sys\n\
+class CatchOutErr:\n\
+    def __init__(self):\n\
+        self.value = ''\n\
+    def write(self, txt):\n\
+        self.value += txt\n\
+catchOutErr = CatchOutErr()\n\
+sys.stdout = catchOutErr\n\
+sys.stderr = catchOutErr\n\
+import plugins\n\
+plugins.log_dump = catchOutErr\n\
+"; //this is python code to redirect stdouts/stderr
+
+    PyRun_SimpleString(stdOutErr.c_str());
+
     GetError();
 }
 
@@ -51,7 +68,6 @@ long Python::GetIntAttribute(PyObject *o, std::string name)
     return result;
 }
 
-
 PythonModule::PythonModule(string moduleName)
 {
     PyObject *name = PyString_FromString(moduleName.c_str());
@@ -70,6 +86,11 @@ PyTypeObject *PythonModule::GetClass(string className)
     PyTypeObject *result = reinterpret_cast<PyTypeObject *>(PyObject_GetAttr(handle_, name));
     Py_DECREF(name);
     return result;
+}
+
+PyObject *PythonModule::GetAttribute(string attributeName)
+{
+    return PyObject_GetAttrString(handle_, attributeName.c_str());
 }
 
 PyObject *PythonModule::CallFunction(string functionName)
@@ -104,5 +125,6 @@ void Python::GetError()
         string s(PyString_AsString(PyObject_Str(traceback)));
     }
 }
+
 
 

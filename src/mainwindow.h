@@ -20,6 +20,7 @@ public:
 public slots:
     void updateStatusBar(const std::string text);
     void updateNodeInfo(const Node *node);
+    void updateLog(const std::string message);
 
 private slots:
     void on_actionExit_triggered();

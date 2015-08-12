@@ -15,6 +15,8 @@ public:
     std::vector<std::string> GetActions(std::string nodeType);
     std::vector<Node *> RunPlugin(std::string pluginName, Node &node);
 
+    std::string GetLog();
+
 private:
     PyObject *GetPythonNode(Node &n);
     Node *GetNode(PyObject *n);
@@ -22,5 +24,5 @@ private:
 
     Python::PythonModule module_;
     PyTypeObject *nodeClass_;
+    PyObject *catcher_;
 };
-

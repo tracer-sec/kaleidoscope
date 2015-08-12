@@ -28,6 +28,7 @@ signals:
     void statusEvent(const std::string message);
     void permanentStatusEvent(QString message);
     void nodeSelectedEvent(const Node *node);
+    void logEvent(const std::string message);
 
 protected:
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;

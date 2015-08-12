@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(paintWidget, SIGNAL(statusEvent(const std::string)), this, SLOT(updateStatusBar(const std::string)));
     connect(paintWidget, SIGNAL(nodeSelectedEvent(const Node*)), this, SLOT(updateNodeInfo(const Node*)));
+    connect(paintWidget, SIGNAL(logEvent(const std::string)), this, SLOT(updateLog(const std::string)));
 }
 
 MainWindow::~MainWindow()
@@ -47,4 +48,10 @@ void MainWindow::updateNodeInfo(const Node *node)
     QString s(node->data.c_str());
     auto nodeInfoLabel = findChild<QLabel *>("nodeInfoLabel");
     nodeInfoLabel->setText(s);
+}
+
+void MainWindow::updateLog(const string message)
+{
+    auto logLabel = findChild<QLabel *>("logLabel");
+    logLabel->setText(message.c_str());
 }
