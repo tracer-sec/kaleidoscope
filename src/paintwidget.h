@@ -16,6 +16,8 @@ class PaintWidget : public QWidget
 public:
     PaintWidget(QWidget *parent);
 
+    void updateLog();
+
 public slots:
     void animate();
 

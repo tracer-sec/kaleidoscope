@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    auto paintWidget = findChild<QWidget *>("widget");
+    auto paintWidget = findChild<PaintWidget *>("widget");
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), paintWidget, SLOT(animate()));
@@ -25,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(paintWidget, SIGNAL(statusEvent(const std::string)), this, SLOT(updateStatusBar(const std::string)));
     connect(paintWidget, SIGNAL(nodeSelectedEvent(const Node*)), this, SLOT(updateNodeInfo(const Node*)));
     connect(paintWidget, SIGNAL(logEvent(const std::string)), this, SLOT(updateLog(const std::string)));
+
+    paintWidget->updateLog();
 }
 
 MainWindow::~MainWindow()

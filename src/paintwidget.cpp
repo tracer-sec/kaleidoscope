@@ -46,6 +46,11 @@ PaintWidget::PaintWidget(QWidget *parent) :
     setMouseTracking(true);
 }
 
+void PaintWidget::updateLog()
+{
+    logEvent(plugins_.GetLog());
+}
+
 void PaintWidget::animate()
 {
     if (animating_)
