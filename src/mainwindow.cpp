@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(timer, SIGNAL(timeout()), paintWidget, SLOT(animate()));
     timer->start(50);
 
-    auto updateLabel = new QLabel("Foo");
+    auto updateLabel = new QLabel();
     statusBar()->addPermanentWidget(updateLabel);
     connect(paintWidget, SIGNAL(permanentStatusEvent(QString)), updateLabel, SLOT(setText(QString)));
 
@@ -47,9 +47,14 @@ void MainWindow::updateStatusBar(const string text)
 
 void MainWindow::updateNodeInfo(const Node *node)
 {
-    QString s(node->data.c_str());
+    QString name(node->type.c_str());
+    name.append(" : ");
+    name.append(node->name.c_str());
+    QString data(node->data.c_str());
+    auto nodeNameLabel = findChild<QLabel *>("nodeNameLabel");
+    nodeNameLabel->setText(name);
     auto nodeInfoLabel = findChild<QLabel *>("nodeInfoLabel");
-    nodeInfoLabel->setText(s);
+    nodeInfoLabel->setText(data);
 }
 
 void MainWindow::updateLog(const string message)
