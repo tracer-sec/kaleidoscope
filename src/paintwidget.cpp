@@ -149,12 +149,12 @@ void PaintWidget::showContextMenu(const QPoint &pos)
     UpdateWorldTransform();
     QPointF worldPosition = pos * transform_.inverted();
 
+    animating_ = false;
+
     Node *target = graph_.GetNode(worldPosition, NODE_SIZE);
 
     if (target != nullptr)
     {
-        animating_ = false;
-
         QMenu contextMenu(tr("Context menu"), this);
 
         QAction action1("Remove node", this);
@@ -177,7 +177,17 @@ void PaintWidget::showContextMenu(const QPoint &pos)
     }
     else
     {
-        // context menu of the canvas
+        QMenu contextMenu(tr("Context menu"), this);
+
+        connect(&contextMenu, SIGNAL(destroyed()), this, SLOT(resumeAnimation()));
+
+        QAction action1("Go to root node", this);
+        connect(&action1, &QAction::triggered, this, &PaintWidget::viewRootNode);
+        contextMenu.addAction(&action1);
+
+        contextMenu.exec(mapToGlobal(pos));
+
+        connect(&contextMenu, SIGNAL(destroyed()), this, SLOT(resumeAnimation()));
     }
 }
 
@@ -214,6 +224,14 @@ void PaintWidget::performAction(Node *node, string action)
     s << numNodes << " new nodes added";
     permanentStatusEvent(QString::fromUtf8(s.str().c_str()));
     logEvent(plugins_.GetLog());
+}
+
+void PaintWidget::viewRootNode()
+{
+    scale_ = 1;
+    Node *root = graph_.GetNodes()[0];
+    viewX_ = root->position.x() * -1;
+    viewY_ = root->position.y() * -1;
 }
 
 void PaintWidget::wheelEvent(QWheelEvent *event)

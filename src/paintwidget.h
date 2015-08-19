@@ -25,6 +25,7 @@ public slots:
     void removeNode(Node *node);
     void resumeAnimation();
     void performAction(Node *node, std::string action);
+    void viewRootNode();
 
 signals:
     void statusEvent(const std::string message);
