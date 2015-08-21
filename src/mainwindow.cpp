@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "newnodedialog.h"
 
 #include <QTimer>
 #include <QLabel>
@@ -37,6 +38,14 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionExit_triggered()
 {
     QApplication::quit();
+}
+
+void MainWindow::on_actionNew_triggered()
+{
+    auto paintWidget = findChild<PaintWidget *>("widget");
+    NewNodeDialog dialog;
+    connect(&dialog, &NewNodeDialog::nodeCreatedEvent, paintWidget, &PaintWidget::addNode);
+    dialog.exec();
 }
 
 void MainWindow::updateStatusBar(const string text)

@@ -7,6 +7,13 @@
 
 struct Node
 {
+    Node() :
+        id(0),
+        data("{}")
+    {
+
+    }
+
     unsigned int id;
     std::string name;
     std::string type;

@@ -19,15 +19,6 @@ PaintWidget::PaintWidget(QWidget *parent) :
     edgePen_(Qt::black),
     selectedId_(0)
 {
-    Node *n0 = new Node();
-    n0->name = "london2600";
-    n0->type = "person";
-    n0->data = "{}";
-    n0->position.setX(0);
-    n0->position.setY(0);
-
-    graph_.AddNode(n0);
-
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
@@ -49,6 +40,11 @@ PaintWidget::PaintWidget(QWidget *parent) :
 void PaintWidget::updateLog()
 {
     logEvent(plugins_.GetLog());
+}
+
+void PaintWidget::newGraph()
+{
+    graph_ = Graph();
 }
 
 void PaintWidget::animate()
@@ -189,6 +185,11 @@ void PaintWidget::showContextMenu(const QPoint &pos)
 
         connect(&contextMenu, SIGNAL(destroyed()), this, SLOT(resumeAnimation()));
     }
+}
+
+void PaintWidget::addNode(Node *node)
+{
+    graph_.AddNode(node);
 }
 
 void PaintWidget::removeNode(Node *target)

@@ -101,8 +101,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>324</width>
-              <height>315</height>
+              <width>98</width>
+              <height>31</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -140,6 +140,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionNew"/>
     <addaction name="actionExit"/>
    </widget>
    <addaction name="menu_File"/>
@@ -148,6 +149,11 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
    </property>
   </action>
  </widget>

@@ -17,11 +17,13 @@ public:
     PaintWidget(QWidget *parent);
 
     void updateLog();
+    void newGraph();
 
 public slots:
     void animate();
 
     void showContextMenu(const QPoint &pos);
+    void addNode(Node *node);
     void removeNode(Node *node);
     void resumeAnimation();
     void performAction(Node *node, std::string action);

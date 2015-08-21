@@ -17,15 +17,18 @@ SOURCES += main.cpp\
     paintwidget.cpp \
     graph.cpp \
     py.cpp \
-    plugins.cpp
+    plugins.cpp \
+    newnodedialog.cpp
 
 HEADERS  += mainwindow.h \
     paintwidget.h \
     graph.h \
     py.h \
-    plugins.h
+    plugins.h \
+    newnodedialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    newnodedialog.ui
 
 win32 {
     INCLUDEPATH += C:\Python27\include
