@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    auto paintWidget = findChild<PaintWidget *>("widget");
+    auto paintWidget = ui->widget;
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), paintWidget, SLOT(animate()));
@@ -42,7 +42,7 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::on_actionNew_triggered()
 {
-    auto paintWidget = findChild<PaintWidget *>("widget");
+    auto paintWidget = ui->widget;
     NewNodeDialog dialog;
     connect(&dialog, &NewNodeDialog::nodeCreatedEvent, paintWidget, &PaintWidget::addNode);
     dialog.exec();
@@ -60,14 +60,11 @@ void MainWindow::updateNodeInfo(const Node *node)
     name.append(" : ");
     name.append(node->name.c_str());
     QString data(node->data.c_str());
-    auto nodeNameLabel = findChild<QLabel *>("nodeNameLabel");
-    nodeNameLabel->setText(name);
-    auto nodeInfoLabel = findChild<QLabel *>("nodeInfoLabel");
-    nodeInfoLabel->setText(data);
+    ui->nodeNameLabel->setText(name);
+    ui->nodeInfoLabel->setText(data);
 }
 
 void MainWindow::updateLog(const string message)
 {
-    auto logLabel = findChild<QLabel *>("logLabel");
-    logLabel->setText(message.c_str());
+    ui->logLabel->setText(message.c_str());
 }

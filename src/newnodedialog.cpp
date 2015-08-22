@@ -18,8 +18,8 @@ NewNodeDialog::~NewNodeDialog()
 
 void NewNodeDialog::accept()
 {
-    auto type = findChild<QLineEdit *>("nodeTypeEdit")->text();
-    auto name = findChild<QLineEdit *>("nodeNameEdit")->text();
+    auto type = ui->nodeTypeEdit->text();
+    auto name = ui->nodeNameEdit->text();
 
     if (type.count() == 0 || name.count() == 0)
     {
