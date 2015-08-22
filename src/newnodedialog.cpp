@@ -1,5 +1,6 @@
 #include "newnodedialog.h"
 #include "ui_newnodedialog.h"
+#include <QMessageBox>
 
 using namespace std;
 
@@ -17,13 +18,20 @@ NewNodeDialog::~NewNodeDialog()
 
 void NewNodeDialog::accept()
 {
-    auto type = findChild<QLineEdit *>("nodeTypeEdit");
-    auto name = findChild<QLineEdit *>("nodeNameEdit");
+    auto type = findChild<QLineEdit *>("nodeTypeEdit")->text();
+    auto name = findChild<QLineEdit *>("nodeNameEdit")->text();
 
-    Node *n = new Node();
-    n->type = string(type->text().toStdString());
-    n->name = string(name->text().toStdString());
-    emit nodeCreatedEvent(n);
+    if (type.count() == 0 || name.count() == 0)
+    {
+        QMessageBox::information(this, "Woah there cowboy", "Please make sure you have entered a node type and name");
+    }
+    else
+    {
+        Node *n = new Node();
+        n->type = string(type.toStdString());
+        n->name = string(name.toStdString());
+        emit nodeCreatedEvent(n);
 
-    QDialog::accept();
+        QDialog::accept();
+    }
 }
