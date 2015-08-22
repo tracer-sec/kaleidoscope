@@ -1,6 +1,7 @@
 #include "newnodedialog.h"
 #include "ui_newnodedialog.h"
 #include <QMessageBox>
+#include <QCompleter>
 
 using namespace std;
 
@@ -9,6 +10,11 @@ NewNodeDialog::NewNodeDialog(QWidget *parent) :
     ui(new Ui::NewNodeDialog)
 {
     ui->setupUi(this);
+
+    QStringList list;
+    list << "person" << "twitter" << "reddit" << "email" << "domain" << "website";
+    QCompleter *completer = new QCompleter(list, this);
+    ui->nodeTypeEdit->setCompleter(completer);
 }
 
 NewNodeDialog::~NewNodeDialog()
