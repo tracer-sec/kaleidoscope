@@ -207,24 +207,42 @@ void PaintWidget::performAction(Node *node, string action)
     cout << action << endl;
     vector<Node *> result = plugins_.RunPlugin(action, *node);
 
+    // Find the direction furthest away from
+    vector<Node *> attached = graph_.GetAttached(node);
+    QPointF v(0, -1);
+    for (auto n : attached)
+    {
+        v += node->position - n->position;
+    }
+    double d = sqrt(v.rx() * v.rx() + v.ry() * v.ry());
+    d = max(1.0, d);
+    v /= d;
+    // Unit length away from all the attached nodes
+
     int numNodes = result.size();
-    QPointF offset(0, -30);
-    QTransform transform;
-    transform.rotate(360.0 / numNodes);
+    QPointF offset = v * 30;
+    double angle = 0;
+    double angleStep = 360.0 / numNodes;
     for (int i = 0; i < numNodes; ++i)
     {
+        angle += angleStep * i * (i % 2 == 0 ? -1 : 1);
+        QTransform transform;
+        transform.rotate(angle);
+
         Node *n = result[i];
-        n->position = node->position + offset;
+        n->position = node->position + offset * transform;
         n = graph_.AddNode(n);
         graph_.AddEdge(node->id, n->id);
-
-        offset = offset * transform;
     }
 
     ostringstream s;
     s << numNodes << " new nodes added";
     permanentStatusEvent(QString::fromUtf8(s.str().c_str()));
     logEvent(plugins_.GetLog());
+
+    // Reselect the node, so the UI updates the node info UI
+    if (selectedId_ == node->id)
+        nodeSelectedEvent(node);
 }
 
 void PaintWidget::viewRootNode()

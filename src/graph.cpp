@@ -1,7 +1,7 @@
 #include "graph.h"
 #include <algorithm>
 
-const double CHARGE = 750;
+const double CHARGE = 1250;
 const double SPRING = 0.1;
 const double EQUILIBRIUM = 60.0;
 
@@ -112,5 +112,18 @@ Node *Graph::GetNode(string type, string name)
 {
     auto n = find_if(nodes_.begin(), nodes_.end(), [&](const Node *a) { return a->type == type && a->name == name; });
     return n == nodes_.end() ? nullptr : *n;
+}
+
+vector<Node *> Graph::GetAttached(const Node *node)
+{
+    vector<Node *> result;
+    for (auto edge : edges_)
+    {
+        if (edge.parent->id == node->id)
+            result.push_back(edge.child);
+        else if (edge.child->id == node->id)
+            result.push_back(edge.parent);
+    }
+    return result;
 }
 

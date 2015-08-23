@@ -53,6 +53,8 @@ public:
     std::vector<Node *> GetNodes() { return nodes_; }
     std::vector<Edge> GetEdges() { return edges_; }
 
+    std::vector<Node *> GetAttached(const Node *node);
+
 protected:
     std::vector<Node *> nodes_;
     std::vector<Edge> edges_;
