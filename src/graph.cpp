@@ -77,6 +77,10 @@ Node *Graph::AddNode(Node *node)
 
 void Graph::AddEdge(unsigned int parentId, unsigned int childId)
 {
+    auto e = find_if(edges_.begin(), edges_.end(), [&](const Edge e) { return e.child->id == childId && e.parent->id == parentId; });
+    if (e != edges_.end())
+        return;
+
     Node *parent = *find_if(nodes_.begin(), nodes_.end(), [&](const Node *a) { return a->id == parentId; });
     Node *child = *find_if(nodes_.begin(), nodes_.end(), [&](const Node *a) { return a->id == childId; });
     Edge edge(parent, child);
