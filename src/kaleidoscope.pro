@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = kaleidoscope
 TEMPLATE = app
 
+QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -33,4 +34,8 @@ FORMS    += mainwindow.ui \
 win32 {
     INCLUDEPATH += C:\Python27\include
     LIBS += -LC:\Python27\libs -lpython27
+}
+unix {
+    INCLUDEPATH += /usr/include/python2.7
+    LIBS += -lpython2.7
 }
