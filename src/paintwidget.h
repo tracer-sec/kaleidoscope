@@ -57,6 +57,7 @@ protected:
     QTransform transform_;
     QPen edgePen_;
     std::unordered_map<std::string, QBrush> nodeBrushes_;
+    QTransform arrowHeads_[2];
 };
 
 #endif // PAINTWIDGET

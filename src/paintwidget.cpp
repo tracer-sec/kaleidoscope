@@ -35,6 +35,9 @@ PaintWidget::PaintWidget(QWidget *parent) :
     });
 
     setMouseTracking(true);
+
+    arrowHeads_[0].rotate(30);
+    arrowHeads_[1].rotate(-30);
 }
 
 void PaintWidget::updateLog()
@@ -69,6 +72,13 @@ void PaintWidget::paintEvent(QPaintEvent *event)
     for (auto edge : graph_.GetEdges())
     {
         painter.drawLine(edge.parent->position, edge.child->position);
+        QPointF v = edge.child->position - edge.parent->position;
+        double d = sqrt(v.rx() * v.rx() + v.ry() * v.ry());
+        v = v / d;
+        QPointF nose = edge.child->position - v * NODE_SIZE;
+        v = v * 6;
+        painter.drawLine(nose, nose - (v * arrowHeads_[0]));
+        painter.drawLine(nose, nose - (v * arrowHeads_[1]));
     }
 
     for (auto node : graph_.GetNodes())
@@ -204,7 +214,7 @@ void PaintWidget::resumeAnimation()
 
 void PaintWidget::performAction(Node *node, string action)
 {
-    cout << action << endl;
+    logEvent(action);
     vector<Node *> result = plugins_.RunPlugin(action, *node);
 
     // Find the direction furthest away from
