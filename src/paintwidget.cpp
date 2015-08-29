@@ -258,9 +258,12 @@ void PaintWidget::performAction(Node *node, string action)
 void PaintWidget::viewRootNode()
 {
     scale_ = 1;
-    Node *root = graph_.GetNodes()[0];
-    viewX_ = root->position.x() * -1;
-    viewY_ = root->position.y() * -1;
+    vector<Node *> nodes = graph_.GetNodes();
+    if (nodes.size() > 0)
+    {
+        viewX_ = nodes[0]->position.x() * -1;
+        viewY_ = nodes[0]->position.y() * -1;
+    }
 }
 
 void PaintWidget::wheelEvent(QWheelEvent *event)
