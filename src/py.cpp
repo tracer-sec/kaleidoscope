@@ -21,9 +21,14 @@ void Python::InitPython(vector<string> paths)
     "import sys\n\
 class CatchOutErr:\n\
     def __init__(self):\n\
-        self.value = ''\n\
+        self._value = ''\n\
     def write(self, txt):\n\
-        self.value += txt\n\
+        self._value += txt\n\
+    @property\n\
+    def value(self):\n\
+        v = self._value\n\
+        self._value = ''\n\
+        return v\n\
 catchOutErr = CatchOutErr()\n\
 sys.stdout = catchOutErr\n\
 sys.stderr = catchOutErr\n\

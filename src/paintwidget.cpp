@@ -214,7 +214,7 @@ void PaintWidget::resumeAnimation()
 
 void PaintWidget::performAction(Node *node, string action)
 {
-    logEvent(action);
+    logEvent(action + "\n");
     vector<Node *> result = plugins_.RunPlugin(action, *node);
 
     // Find the direction furthest away from

@@ -66,5 +66,7 @@ void MainWindow::updateNodeInfo(const Node *node)
 
 void MainWindow::updateLog(const string message)
 {
-    ui->logLabel->setText(message.c_str());
+    QString temp = ui->logLabel->text();
+    temp.append(message.c_str());
+    ui->logLabel->setText(temp);
 }
