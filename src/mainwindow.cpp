@@ -75,7 +75,7 @@ void MainWindow::updateLog(const string message)
 
 void MainWindow::on_actionSave_triggered()
 {
-    auto filename = QFileDialog::getSaveFileName(this, "Save file", "", "Kaleidoscope graph files (*.db)");
+    auto filename = QFileDialog::getSaveFileName(this, "Save file", "", "Kaleidoscope graph files (*.db);; All files (* *.*)");
     if (!filename.isNull())
     {
         GraphParser parser(ui->widget->getGraph());
@@ -85,7 +85,7 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    auto filename = QFileDialog::getOpenFileName(this, "Open file", "", "Kaleidoscope graph files (*.db)");
+    auto filename = QFileDialog::getOpenFileName(this, "Open file", "", "Kaleidoscope graph files (*.db);; All files (* *.*)");
     if (!filename.isNull())
     {
         ui->widget->clearGraph();
