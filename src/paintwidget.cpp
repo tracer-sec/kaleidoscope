@@ -48,6 +48,7 @@ void PaintWidget::updateLog()
 void PaintWidget::clearGraph()
 {
     graph_ = Graph();
+    selectedId_ = 0;
 }
 
 void PaintWidget::animate()
