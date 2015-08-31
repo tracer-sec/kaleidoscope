@@ -45,7 +45,7 @@ void PaintWidget::updateLog()
     logEvent(plugins_.GetLog());
 }
 
-void PaintWidget::newGraph()
+void PaintWidget::clearGraph()
 {
     graph_ = Graph();
 }
@@ -264,6 +264,12 @@ void PaintWidget::viewRootNode()
         viewX_ = nodes[0]->position.x() * -1;
         viewY_ = nodes[0]->position.y() * -1;
     }
+}
+
+void PaintWidget::newGraph(Node *node)
+{
+    clearGraph();
+    addNode(node);
 }
 
 void PaintWidget::wheelEvent(QWheelEvent *event)

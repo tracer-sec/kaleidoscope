@@ -17,14 +17,18 @@ SOURCES += main.cpp\
     graph.cpp \
     py.cpp \
     plugins.cpp \
-    newnodedialog.cpp
+    newnodedialog.cpp \
+    ../lib/sqlite3.c \
+    graphparser.cpp
 
 HEADERS  += mainwindow.h \
     paintwidget.h \
     graph.h \
     py.h \
     plugins.h \
-    newnodedialog.h
+    newnodedialog.h \
+    ../lib/sqlite3.h \
+    graphparser.h
 
 FORMS    += mainwindow.ui \
     newnodedialog.ui

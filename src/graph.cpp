@@ -66,9 +66,16 @@ Node *Graph::AddNode(Node *node)
     Node *n = GetNode(node->type, node->name);
     if (n == nullptr)
     {
-        node->id = nextId_;
+        if (node->id == 0)
+        {
+            node->id = nextId_;
+            nextId_ ++;
+        }
+        else
+        {
+            nextId_ = max(node->id + 1, nextId_);
+        }
         nodes_.push_back(node);
-        nextId_ ++;
         n = node;
     }
     stable_ = false;

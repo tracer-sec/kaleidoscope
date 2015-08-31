@@ -17,7 +17,10 @@ public:
     PaintWidget(QWidget *parent);
 
     void updateLog();
-    void newGraph();
+    void clearGraph();
+
+    // TODO: not sure about this . . .
+    Graph *getGraph() { return &graph_; }
 
 public slots:
     void animate();
@@ -28,6 +31,7 @@ public slots:
     void resumeAnimation();
     void performAction(Node *node, std::string action);
     void viewRootNode();
+    void newGraph(Node *node);
 
 signals:
     void statusEvent(const std::string message);

@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "newnodedialog.h"
+#include "graphparser.h"
 
 #include <QTimer>
 #include <QLabel>
+#include <QFileDialog>
 
 using namespace std;
 
@@ -44,7 +46,7 @@ void MainWindow::on_actionNew_triggered()
 {
     auto paintWidget = ui->widget;
     NewNodeDialog dialog;
-    connect(&dialog, &NewNodeDialog::nodeCreatedEvent, paintWidget, &PaintWidget::addNode);
+    connect(&dialog, &NewNodeDialog::nodeCreatedEvent, paintWidget, &PaintWidget::newGraph);
     dialog.exec();
 }
 
@@ -69,4 +71,25 @@ void MainWindow::updateLog(const string message)
     QString temp = ui->logLabel->text();
     temp.append(message.c_str());
     ui->logLabel->setText(temp);
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    auto filename = QFileDialog::getSaveFileName(this, "Save file", "", "Kaleidoscope graph files (*.db)");
+    if (!filename.isNull())
+    {
+        GraphParser parser(ui->widget->getGraph());
+        parser.Save(filename.toStdString());
+    }
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    auto filename = QFileDialog::getOpenFileName(this, "Open file", "", "Kaleidoscope graph files (*.db)");
+    if (!filename.isNull())
+    {
+        ui->widget->clearGraph();
+        GraphParser parser(ui->widget->getGraph());
+        parser.Load(filename.toStdString());
+    }
 }
