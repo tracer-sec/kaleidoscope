@@ -12,12 +12,12 @@ const unsigned int NODE_SIZE = 6;
 
 PaintWidget::PaintWidget(QWidget *parent) :
     QWidget(parent),
+    selectedId_(0),
     animating_(true),
     viewX_(0),
     viewY_(0),
     scale_(1),
-    edgePen_(Qt::black),
-    selectedId_(0)
+    edgePen_(Qt::black)
 {
     setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -62,6 +62,8 @@ void PaintWidget::animate()
 
 void PaintWidget::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event)
+
     QPainter painter;
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing);
