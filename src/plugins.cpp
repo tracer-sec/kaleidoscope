@@ -17,6 +17,7 @@ Plugins::Plugins() :
     nodeClass_ = model.GetClass("Node");
 
     catcher_ = module_.GetAttribute("log_dump");
+    func_ = module_.GetAttribute("run");
 }
 
 Plugins::~Plugins()
@@ -24,6 +25,7 @@ Plugins::~Plugins()
     // Crash bang and wallop if this is here. Not sure why? :-/
     //Py_DECREF(catcher_);
     Py_DECREF(nodeClass_);
+    Py_DECREF(func_);
 }
 
 vector<string> Plugins::GetActions(string nodeType)
@@ -54,38 +56,22 @@ vector<string> Plugins::GetActions(string nodeType)
 
 vector<Node *> Plugins::RunPlugin(string pluginName, Node &node)
 {
-    PyObject *args = Py_BuildValue("(s)", pluginName.c_str());
-    PyObject *plugin = module_.CallFunction("fetch", args);
-    Py_DECREF(args);
-
     vector<Node *> result;
 
-    if (plugin)
-    {
-        auto func = PyDict_GetItemString(plugin, "func");
+    PyObject *pyNode = GetPythonNode(node);
 
-        PyErr_Print();
+    PyObject *args = Py_BuildValue("Os", pyNode, pluginName.c_str());
+    PyObject *data = PyObject_CallObject(func_, args);
+    Py_DECREF(args);
 
-        if (func)
-        {
-            PyObject *pyNode = GetPythonNode(node);
+    size_t length = PyList_Size(data);
+    for (unsigned int i = 0; i < length; ++i)
+        result.push_back(GetNode(PyList_GetItem(data, i)));
 
-            args = Py_BuildValue("(O)", pyNode);
-            PyObject *data = PyObject_CallObject(func, args);
-            Py_DECREF(args);
+    UpdateNode(pyNode, node);
 
-            size_t length = PyList_Size(data);
-            for (unsigned int i = 0; i < length; ++i)
-                result.push_back(GetNode(PyList_GetItem(data, i)));
-
-            UpdateNode(pyNode, node);
-
-            Py_DECREF(data);
-            Py_DECREF(pyNode);
-        }
-
-        Py_DECREF(plugin);
-    }
+    Py_DECREF(data);
+    Py_DECREF(pyNode);
 
     return result;
 }

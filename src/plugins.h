@@ -25,4 +25,5 @@ private:
     Python::PythonModule module_;
     PyTypeObject *nodeClass_;
     PyObject *catcher_;
+    PyObject *func_;
 };
