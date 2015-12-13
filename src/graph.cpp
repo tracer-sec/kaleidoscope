@@ -33,8 +33,7 @@ void Graph::Iterate(unsigned int lockedNodeId)
             
             double push = CHARGE * 1.f / (d * d);
             push = push > 5 ? 5 : push;
-            if (lockedNodeId != n0->id)
-                n0->force += v * push;
+            n0->force += v * push;
             n1->force -= v * push;
         }
     }
@@ -47,17 +46,16 @@ void Graph::Iterate(unsigned int lockedNodeId)
 
         double push = SPRING * (d - EQUILIBRIUM);
         push = push > 5 ? 5 : push;
-        if (lockedNodeId != e.parent->id)
-            e.parent->force += v * push;
-        if (lockedNodeId != e.child->id)
-            e.child->force -= v * push;
+        e.parent->force += v * push;
+        e.child->force -= v * push;
     }
     
     double tickMovement = 0;
     for (auto n : nodes_)
     {
         tickMovement += sqrt(n->force.rx() * n->force.rx() + n->force.ry() * n->force.ry());
-        n->position += n->force;
+        if (lockedNodeId != n->id)
+            n->position += n->force;
         n->force = QPointF();
     }
     

@@ -165,9 +165,7 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
         }
         else
         {
-            auto p = event->pos();
-            auto offset = p - startDrag_;
-            draggingNode_->position += p - startDrag_;
+            draggingNode_->position = worldPosition;
         }
         startDrag_ = event->pos();
         update();
