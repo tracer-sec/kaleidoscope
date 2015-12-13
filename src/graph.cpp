@@ -14,7 +14,7 @@ Graph::Graph() :
     
 }
 
-void Graph::Iterate()
+void Graph::Iterate(unsigned int lockedNodeId)
 {
     if (stable_)
         return;
@@ -33,7 +33,8 @@ void Graph::Iterate()
             
             double push = CHARGE * 1.f / (d * d);
             push = push > 5 ? 5 : push;
-            n0->force += v * push;
+            if (lockedNodeId != n0->id)
+                n0->force += v * push;
             n1->force -= v * push;
         }
     }
@@ -46,8 +47,10 @@ void Graph::Iterate()
 
         double push = SPRING * (d - EQUILIBRIUM);
         push = push > 5 ? 5 : push;
-        e.parent->force += v * push;
-        e.child->force -= v * push;
+        if (lockedNodeId != e.parent->id)
+            e.parent->force += v * push;
+        if (lockedNodeId != e.child->id)
+            e.child->force -= v * push;
     }
     
     double tickMovement = 0;

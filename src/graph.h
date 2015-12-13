@@ -40,7 +40,7 @@ class Graph
 public:
     Graph();
 
-    void Iterate();
+    void Iterate(unsigned int lockedNodeId);
 
     Node *AddNode(Node *node);
     void AddEdge(unsigned int parentId, unsigned int childId);

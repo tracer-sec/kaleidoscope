@@ -51,6 +51,7 @@ protected:
     Graph graph_;
     unsigned int selectedId_;
     QPointF startDrag_;
+    Node *draggingNode_;
     bool animating_;
     Plugins plugins_;
 

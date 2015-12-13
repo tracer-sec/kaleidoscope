@@ -13,6 +13,7 @@ const unsigned int NODE_SIZE = 6;
 PaintWidget::PaintWidget(QWidget *parent) :
     QWidget(parent),
     selectedId_(0),
+    draggingNode_(nullptr),
     animating_(true),
     viewX_(0),
     viewY_(0),
@@ -55,7 +56,7 @@ void PaintWidget::animate()
 {
     if (animating_)
     {
-        graph_.Iterate();
+        graph_.Iterate(draggingNode_ == nullptr ? 0 : draggingNode_->id);
         update();
     }
 }
@@ -107,9 +108,20 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         startDrag_ = event->pos();
-    }
 
-    animating_ = false;
+        UpdateWorldTransform();
+        QPointF worldPosition = event->pos() * transform_.inverted();
+
+        Node *target = graph_.GetNode(worldPosition, NODE_SIZE);
+        if (target == nullptr)
+        {
+            animating_ = false;
+        }
+        else
+        {
+            draggingNode_ = target;
+        }
+    }
 }
 
 void PaintWidget::mouseReleaseEvent(QMouseEvent *event)
@@ -126,6 +138,7 @@ void PaintWidget::mouseReleaseEvent(QMouseEvent *event)
         }
     }
 
+    draggingNode_ = nullptr;
     animating_ = true;
 }
 
@@ -144,10 +157,18 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
 
     if (event->buttons() & Qt::LeftButton)
     {
-        QPointF offset = event->pos() - startDrag_;
-        viewX_ += offset.rx() / scale_;
-        viewY_ += offset.ry() / scale_;
-
+        if (draggingNode_ == nullptr)
+        {
+            QPointF offset = event->pos() - startDrag_;
+            viewX_ += offset.rx() / scale_;
+            viewY_ += offset.ry() / scale_;
+        }
+        else
+        {
+            auto p = event->pos();
+            auto offset = p - startDrag_;
+            draggingNode_->position += p - startDrag_;
+        }
         startDrag_ = event->pos();
         update();
     }
