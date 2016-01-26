@@ -4,16 +4,19 @@
 #include "graphparser.h"
 
 #include <QTimer>
-#include <QLabel>
 #include <QFileDialog>
 
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    currentFilename_(),
+    unsavedChanges_(false)
 {
     ui->setupUi(this);
+
+    setWindowTitle(QString::fromStdString("Kaleidoscope - [" + currentFilename_ + "]"));
 
     auto paintWidget = ui->widget;
 
@@ -21,9 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(timer, SIGNAL(timeout()), paintWidget, SLOT(animate()));
     timer->start(50);
 
-    auto updateLabel = new QLabel();
-    statusBar()->addPermanentWidget(updateLabel);
-    connect(paintWidget, SIGNAL(permanentStatusEvent(QString)), updateLabel, SLOT(setText(QString)));
+    updateLabel_ = new QLabel();
+    statusBar()->addPermanentWidget(updateLabel_);
+    connect(paintWidget, SIGNAL(permanentStatusEvent(QString)), updateLabel_, SLOT(setText(QString)));
 
     connect(paintWidget, SIGNAL(statusEvent(const std::string)), this, SLOT(updateStatusBar(const std::string)));
     connect(paintWidget, SIGNAL(nodeSelectedEvent(const Node*)), this, SLOT(updateNodeInfo(const Node*)));
@@ -52,16 +55,16 @@ void MainWindow::on_actionNew_triggered()
 
 void MainWindow::updateStatusBar(const string text)
 {
-    QString s(text.c_str());
+    QString s = QString::fromStdString(text);
     statusBar()->showMessage(s);
 }
 
 void MainWindow::updateNodeInfo(const Node *node)
 {
-    QString name(node->type.c_str());
+    QString name = QString::fromStdString(node->type);
     name.append(" : ");
     name.append(node->name.c_str());
-    QString data(node->data.c_str());
+    QString data = QString::fromStdString(node->data);
     ui->nodeNameLabel->setText(name);
     ui->nodeInfoLabel->setText(data);
 }
@@ -75,11 +78,18 @@ void MainWindow::updateLog(const string message)
 
 void MainWindow::on_actionSave_triggered()
 {
-    auto filename = QFileDialog::getSaveFileName(this, "Save file", "", "Kaleidoscope graph files (*.db);; All files (* *.*)");
-    if (!filename.isNull())
+    if (currentFilename_ == "")
+    {
+        currentFilename_ = GetFilename();
+    }
+
+    if (currentFilename_ != "")
     {
         GraphParser parser(ui->widget->getGraph());
-        parser.Save(filename.toStdString());
+        parser.Save(currentFilename_);
+        unsavedChanges_ = false;
+        updateLabel_->setText(QString::fromStdString(currentFilename_));
+        setWindowTitle(QString::fromStdString("Kaleidoscope - [" + currentFilename_ + "]"));
     }
 }
 
@@ -90,6 +100,23 @@ void MainWindow::on_actionOpen_triggered()
     {
         ui->widget->clearGraph();
         GraphParser parser(ui->widget->getGraph());
-        parser.Load(filename.toStdString());
+        currentFilename_ = filename.toStdString();
+        parser.Load(currentFilename_);
+        setWindowTitle(QString::fromStdString("Kaleidoscope - [" + currentFilename_ + "]"));
     }
+}
+
+void MainWindow::on_actionSave_As_triggered()
+{
+    currentFilename_ = "";
+    on_actionSave_triggered();
+}
+
+string MainWindow::GetFilename()
+{
+    auto filename = QFileDialog::getSaveFileName(this, "Save file", "", "Kaleidoscope graph files (*.db);; All files (* *.*)");
+    if (!filename.isNull())
+        return filename.toStdString();
+    else
+        return "";
 }
