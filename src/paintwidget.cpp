@@ -2,6 +2,7 @@
 #include <QPainter>
 #include <QMenu>
 #include <QTransform>
+#include <QtConcurrent/QtConcurrent>
 
 #include <iostream>
 #include <sstream>
@@ -14,16 +15,21 @@ PaintWidget::PaintWidget(QWidget *parent) :
     QWidget(parent),
     selectedId_(0),
     draggingNode_(nullptr),
+    workingNode_(nullptr),
     animating_(true),
     viewX_(0),
     viewY_(0),
     scale_(1),
-    edgePen_(Qt::black)
+    edgePen_(Qt::black),
+    threadWatcher_(this)
 {
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
             this, SLOT(showContextMenu(const QPoint &)));
+
+    connect(&threadWatcher_, SIGNAL(finished()),
+            this, SLOT(completeAction()));
 
     nodeBrushes_ = std::unordered_map<string, QBrush>({
         { "DEFAULT", QBrush(Qt::gray) },
@@ -237,9 +243,21 @@ void PaintWidget::resumeAnimation()
 void PaintWidget::performAction(Node *node, string action)
 {
     logEvent(action + "\n");
-    vector<Node *> result = plugins_.RunPlugin(action, *node);
+
+    workingNode_ = node;
+    QFuture<vector<Node *>> future = QtConcurrent::run(&plugins_, &Plugins::RunPlugin, action, *node);
+    threadWatcher_.setFuture(future);
+    // In theory QFuture is ref-counted, so it shouldn't matter that
+    // it passes out of scope here, since QFutureWatcher keeps it's own 
+    // reference . . .
+}
+
+void PaintWidget::completeAction()
+{
+    std::vector<Node *> result = threadWatcher_.future().result();
 
     // Find the direction furthest away from
+    auto node = workingNode_;
     vector<Node *> attached = graph_.GetAttached(node);
     QPointF v(0, -1);
     for (auto n : attached)

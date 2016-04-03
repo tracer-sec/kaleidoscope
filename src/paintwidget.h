@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include <QPen>
+#include <QFutureWatcher>
 #include <string>
 #include <unordered_map>
 #include "graph.h"
@@ -30,6 +31,7 @@ public slots:
     void removeNode(Node *node);
     void resumeAnimation();
     void performAction(Node *node, std::string action);
+    void completeAction();
     void viewRootNode();
     void newGraph(Node *node);
 
@@ -52,6 +54,7 @@ protected:
     unsigned int selectedId_;
     QPointF startDrag_;
     Node *draggingNode_;
+    Node *workingNode_;
     bool animating_;
     Plugins plugins_;
 
@@ -63,6 +66,8 @@ protected:
     QPen edgePen_;
     std::unordered_map<std::string, QBrush> nodeBrushes_;
     QTransform arrowHeads_[2];
+
+    QFutureWatcher<std::vector<Node *>> threadWatcher_;
 };
 
 #endif // PAINTWIDGET
