@@ -180,6 +180,12 @@ void PaintWidget::mouseMoveEvent(QMouseEvent *event)
 
 void PaintWidget::showContextMenu(const QPoint &pos)
 {
+    if (threadWatcher_.isRunning())
+    {
+        logEvent("Action already running. Please wait.\n");
+        return;
+    }
+
     UpdateWorldTransform();
     QPointF worldPosition = pos * transform_.inverted();
 
@@ -242,6 +248,12 @@ void PaintWidget::resumeAnimation()
 
 void PaintWidget::performAction(Node *node, string action)
 {
+    if (threadWatcher_.isRunning())
+    {
+        logEvent("Action already running. Please wait.\n");
+        return;
+    }
+
     logEvent(action + "\n");
 
     workingNode_ = node;
