@@ -66,6 +66,7 @@ void MainWindow::updateNodeInfo(const Node *node)
     name.append(node->name.c_str());
     QString data = QString::fromStdString(node->data);
     ui->nodeNameLabel->setText(name);
+    ui->nodeNameLabel->setToolTip(name);
     ui->nodeInfoLabel->setText(data);
 }
 
