@@ -257,7 +257,7 @@ void PaintWidget::performAction(Node *node, string action)
     logEvent(action + "\n");
 
     workingNode_ = node;
-    QFuture<vector<Node *>> future = QtConcurrent::run(&plugins_, &Plugins::RunPlugin, action, *node);
+    QFuture<vector<Node *>> future = QtConcurrent::run(&plugins_, &Plugins::RunPlugin, action, ref(*node));
     threadWatcher_.setFuture(future);
     // In theory QFuture is ref-counted, so it shouldn't matter that
     // it passes out of scope here, since QFutureWatcher keeps it's own 
