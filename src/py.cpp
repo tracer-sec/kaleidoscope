@@ -5,10 +5,12 @@ using namespace Python;
 
 void Python::InitPython(vector<string> paths)
 {
-    Py_SetProgramName("python_embed");
+    char foo[] = "python_embed";
+    Py_SetProgramName(foo);
     Py_Initialize();
 
-    PyObject* sysPath = PySys_GetObject("path");
+    char bar[] = "path";
+    PyObject* sysPath = PySys_GetObject(bar);
     for (auto newPath : paths)
     {
         PyObject* p = PyString_FromString(newPath.c_str());
