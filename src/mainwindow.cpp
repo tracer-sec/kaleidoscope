@@ -50,7 +50,12 @@ void MainWindow::on_actionNew_triggered()
     auto paintWidget = ui->widget;
     NewNodeDialog dialog;
     connect(&dialog, &NewNodeDialog::nodeCreatedEvent, paintWidget, &PaintWidget::newGraph);
-    dialog.exec();
+    int result = dialog.exec();
+    if (result == 1)
+    {
+        currentFilename_ = "";
+        setWindowTitle(QString::fromStdString("Kaleidoscope - [" + currentFilename_ + "]"));
+    }
 }
 
 void MainWindow::updateStatusBar(const string text)
