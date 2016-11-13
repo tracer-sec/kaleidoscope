@@ -8,6 +8,7 @@ void Python::InitPython(vector<string> paths)
     char foo[] = "python_embed";
     Py_SetProgramName(foo);
     Py_Initialize();
+    PyEval_InitThreads();
 
     char bar[] = "path";
     PyObject* sysPath = PySys_GetObject(bar);
