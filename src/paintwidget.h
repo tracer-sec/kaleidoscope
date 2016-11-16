@@ -49,6 +49,7 @@ protected:
     void wheelEvent(QWheelEvent *event) Q_DECL_OVERRIDE;
 
     void UpdateWorldTransform();
+    void CreateBrush(const std::string str);
 
     Graph graph_;
     unsigned int selectedId_;

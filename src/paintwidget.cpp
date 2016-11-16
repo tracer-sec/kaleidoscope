@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -32,13 +33,14 @@ PaintWidget::PaintWidget(QWidget *parent) :
             this, SLOT(completeAction()));
 
     nodeBrushes_ = std::unordered_map<string, QBrush>({
-        { "DEFAULT", QBrush(Qt::gray) },
         { "SELECTED", QBrush(Qt::white) },
-        { "person", QBrush(Qt::red) },
+        { "person", QBrush(Qt::black) },
         { "twitter", QBrush(Qt::blue) },
-        { "reddit", QBrush(Qt::green) },
+        { "reddit", QBrush(Qt::red) },
         { "domain", QBrush(Qt::lightGray) },
-        { "email", QBrush(Qt::yellow) }
+        { "email", QBrush(Qt::yellow) },
+        { "website", QBrush(Qt::green) },
+        { "github", QBrush(Qt::magenta) }
     });
 
     setMouseTracking(true);
@@ -97,6 +99,7 @@ void PaintWidget::paintEvent(QPaintEvent *event)
             painter.setBrush(nodeBrushes_["SELECTED"]);
         else
         {
+            CreateBrush(node->type);
             auto brush = nodeBrushes_.find(node->type);
             if (brush == nodeBrushes_.end())
                 painter.setBrush(nodeBrushes_["DEFAULT"]);
@@ -336,4 +339,37 @@ void PaintWidget::UpdateWorldTransform()
     transform_.translate(geometry().width() / 2, geometry().height() / 2);
     transform_.scale(scale_, scale_);
     transform_.translate(viewX_, viewY_);
+}
+
+// djb2 hash function
+unsigned int HashThis(const string str)
+{
+    unsigned int hash = 5381;
+    for (char c : str)
+        hash = ((hash << 5) + hash) + c;
+    return hash;
+}
+
+void PaintWidget::CreateBrush(const string str)
+{
+    if (nodeBrushes_.find(str) != nodeBrushes_.end())
+        return;
+
+    unsigned int h = HashThis(str);
+
+    float r = static_cast<float>((h >> 24) & 0xff);
+    float g = static_cast<float>((h >> 16) & 0xff);
+    float b = static_cast<float>((h >> 8) & 0xff);
+
+    int maxVal = max(r, max(g, b));
+    int minVal = min(r, min(g, b));
+    int diff = (maxVal - minVal);
+
+    r = (r - minVal) * (1.f / diff);
+    g = (g - minVal) * (1.f / diff);
+    b = (b - minVal) * (1.f / diff);
+
+    QBrush brush(QColor(static_cast<int>(r * 255), static_cast<int>(g * 255), static_cast<int>(b * 255)));
+
+    nodeBrushes_[str] = brush;
 }
