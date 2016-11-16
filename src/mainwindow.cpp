@@ -55,6 +55,7 @@ void MainWindow::on_actionNew_triggered()
     {
         currentFilename_ = "";
         setWindowTitle(QString::fromStdString("Kaleidoscope - [" + currentFilename_ + "]"));
+        updateNodeInfo(nullptr);
     }
 }
 
@@ -66,13 +67,22 @@ void MainWindow::updateStatusBar(const string text)
 
 void MainWindow::updateNodeInfo(const Node *node)
 {
-    QString name = QString::fromStdString(node->type);
-    name.append(" : ");
-    name.append(node->name.c_str());
-    QString data = QString::fromStdString(node->data);
-    ui->nodeNameLabel->setText(name);
-    ui->nodeNameLabel->setToolTip(name);
-    ui->nodeInfoLabel->setText(data);
+    if (node == nullptr)
+    {
+        ui->nodeNameLabel->setText("");
+        ui->nodeNameLabel->setToolTip("");
+        ui->nodeInfoLabel->setText("");
+    }
+    else
+    {
+        QString name = QString::fromStdString(node->type);
+        name.append(" : ");
+        name.append(node->name.c_str());
+        QString data = QString::fromStdString(node->data);
+        ui->nodeNameLabel->setText(name);
+        ui->nodeNameLabel->setToolTip(name);
+        ui->nodeInfoLabel->setText(data);
+    }
 }
 
 void MainWindow::updateLog(const string message)
@@ -106,9 +116,10 @@ void MainWindow::on_actionOpen_triggered()
     {
         ui->widget->clearGraph();
         GraphParser parser(ui->widget->getGraph());
-        currentFilename_ = filename.toStdString();
         parser.Load(currentFilename_);
+        currentFilename_ = filename.toStdString();
         setWindowTitle(QString::fromStdString("Kaleidoscope - [" + currentFilename_ + "]"));
+        updateNodeInfo(nullptr);
     }
 }
 
