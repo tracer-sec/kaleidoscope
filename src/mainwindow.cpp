@@ -114,11 +114,12 @@ void MainWindow::on_actionOpen_triggered()
     auto filename = QFileDialog::getOpenFileName(this, "Open file", "", "Kaleidoscope graph files (*.db);; All files (* *.*)");
     if (!filename.isNull())
     {
+        currentFilename_ = filename.toStdString();
         ui->widget->clearGraph();
         GraphParser parser(ui->widget->getGraph());
         parser.Load(currentFilename_);
-        currentFilename_ = filename.toStdString();
         setWindowTitle(QString::fromStdString("Kaleidoscope - [" + currentFilename_ + "]"));
+        updateLog("Graph loaded: " + currentFilename_ + "\n");
         updateNodeInfo(nullptr);
     }
 }
@@ -131,9 +132,11 @@ void MainWindow::on_actionSave_As_triggered()
 
 string MainWindow::GetFilename()
 {
-    auto filename = QFileDialog::getSaveFileName(this, "Save file", "", "Kaleidoscope graph files (*.db);; All files (* *.*)");
-    if (!filename.isNull())
-        return filename.toStdString();
+    QFileDialog fileDialog(this, "Save file", "", "Kaleidoscope graph files (*.db);; All files (* *.*)");
+    fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+    fileDialog.setDefaultSuffix("db");
+    if (fileDialog.exec())
+        return fileDialog.selectedFiles().first().toStdString();
     else
         return "";
 }
