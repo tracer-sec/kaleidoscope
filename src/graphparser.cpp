@@ -67,6 +67,8 @@ int GraphParser::Save(string filename)
     sqlite3_exec(db, createNodeTable.c_str(), nullptr, nullptr, &error);
     sqlite3_exec(db, createEdgeTable.c_str(), nullptr, nullptr, &error);
 
+    sqlite3_exec(db, "BEGIN", 0, 0, 0);
+
     sqlite3_stmt *statement;
     sqlite3_prepare_v2(db, "INSERT INTO nodes (id, type, name, data, x, y) VALUES (?, ?, ?, ?, ?, ?)", -1, &statement, nullptr);
     for (auto n : graph_->GetNodes())
@@ -86,6 +88,10 @@ int GraphParser::Save(string filename)
     }
     sqlite3_finalize(statement);
 
+    sqlite3_exec(db, "COMMIT", 0, 0, 0);
+
+    sqlite3_exec(db, "BEGIN", 0, 0, 0);
+
     sqlite3_stmt *edgeSql;
     sqlite3_prepare_v2(db, "INSERT INTO edges (parent_id, child_id) VALUES (?, ?)", -1, &edgeSql, nullptr);
     for (auto e : graph_->GetEdges())
@@ -100,6 +106,8 @@ int GraphParser::Save(string filename)
         sqlite3_reset(edgeSql);
     }
     sqlite3_finalize(edgeSql);
+
+    sqlite3_exec(db, "COMMIT", 0, 0, 0);
 
     sqlite3_close(db);
 
