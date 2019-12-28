@@ -28,9 +28,18 @@ MainWindow::MainWindow(QWidget *parent) :
     statusBar()->addPermanentWidget(updateLabel_);
     connect(paintWidget, SIGNAL(permanentStatusEvent(QString)), updateLabel_, SLOT(setText(QString)));
 
+    progressBar_ = new QProgressBar();
+    progressBar_->setMinimum(0);
+    progressBar_->setMaximum(1);
+    progressBar_->setAlignment(Qt::AlignRight);
+    progressBar_->setFixedWidth(60);
+    statusBar()->addPermanentWidget(progressBar_);
+
     connect(paintWidget, SIGNAL(statusEvent(const std::string)), this, SLOT(updateStatusBar(const std::string)));
     connect(paintWidget, SIGNAL(nodeSelectedEvent(const Node*)), this, SLOT(updateNodeInfo(const Node*)));
     connect(paintWidget, SIGNAL(logEvent(const std::string)), this, SLOT(updateLog(const std::string)));
+    connect(paintWidget, SIGNAL(pluginRunning()), this, SLOT(pluginRunning()));
+    connect(paintWidget, SIGNAL(pluginStopped()), this, SLOT(pluginStopped()));
 
     paintWidget->updateLog();
 }
@@ -90,6 +99,16 @@ void MainWindow::updateLog(const string message)
     QString temp = ui->logLabel->text();
     temp.append(message.c_str());
     ui->logLabel->setText(temp);
+}
+
+void MainWindow::pluginRunning()
+{
+    progressBar_->setMaximum(0);
+}
+
+void MainWindow::pluginStopped()
+{
+    progressBar_->setMaximum(1);
 }
 
 void MainWindow::on_actionSave_triggered()

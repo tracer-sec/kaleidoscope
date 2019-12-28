@@ -40,6 +40,8 @@ signals:
     void permanentStatusEvent(QString message);
     void nodeSelectedEvent(const Node *node);
     void logEvent(const std::string message);
+    void pluginRunning();
+    void pluginStopped();
 
 protected:
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;

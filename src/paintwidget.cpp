@@ -257,6 +257,7 @@ void PaintWidget::performAction(Node *node, string action)
         return;
     }
 
+    pluginRunning();
     logEvent(action + "\n");
 
     workingNode_ = node;
@@ -269,9 +270,10 @@ void PaintWidget::performAction(Node *node, string action)
 
 void PaintWidget::completeAction()
 {
+    pluginStopped();
     std::vector<Node *> result = threadWatcher_.future().result();
 
-    // Find the direction furthest away from
+    // Find the direction furthest away from all of the existing nodes
     auto node = workingNode_;
     vector<Node *> attached = graph_.GetAttached(node);
     QPointF v(0, -1);

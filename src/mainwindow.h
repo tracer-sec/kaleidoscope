@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QLabel>
+#include <QProgressBar>
 #include <string>
 #include "graph.h"
 
@@ -22,6 +23,8 @@ public slots:
     void updateStatusBar(const std::string text);
     void updateNodeInfo(const Node *node);
     void updateLog(const std::string message);
+    void pluginRunning();
+    void pluginStopped();
 
 private slots:
     void on_actionExit_triggered();
@@ -40,6 +43,7 @@ private:
     std::string currentFilename_;
     bool unsavedChanges_;
     QLabel *updateLabel_;
+    QProgressBar *progressBar_;
 };
 
 #endif // MAINWINDOW_H
