@@ -5,6 +5,7 @@
 
 #include <QTimer>
 #include <QFileDialog>
+#include <QScrollBar>
 
 using namespace std;
 
@@ -99,6 +100,7 @@ void MainWindow::updateLog(const string message)
     QString temp = ui->logLabel->text();
     temp.append(message.c_str());
     ui->logLabel->setText(temp);
+    ui->logScrollArea->verticalScrollBar()->setSliderPosition(ui->logLabel->height());
 }
 
 void MainWindow::pluginRunning()

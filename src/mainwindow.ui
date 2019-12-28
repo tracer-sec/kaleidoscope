@@ -26,7 +26,7 @@
       <widget class="PaintWidget" name="widget" native="true"/>
       <widget class="QTabWidget" name="tabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="infoTab">
         <attribute name="title">
@@ -53,7 +53,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QScrollArea" name="scrollArea">
+          <widget class="QScrollArea" name="nodeScrollArea">
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
@@ -62,8 +62,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>346</width>
-              <height>280</height>
+              <width>349</width>
+              <height>291</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout">
@@ -95,7 +95,7 @@
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
-          <widget class="QScrollArea" name="scrollArea_2">
+          <widget class="QScrollArea" name="logScrollArea">
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
@@ -104,8 +104,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>346</width>
-              <height>302</height>
+              <width>349</width>
+              <height>311</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -136,7 +136,7 @@
      <x>0</x>
      <y>0</y>
      <width>651</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
