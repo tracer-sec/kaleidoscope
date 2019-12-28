@@ -1,9 +1,11 @@
 #include "graph.h"
 #include <algorithm>
+#include <cmath>
 
 const double CHARGE = 1250;
-const double SPRING = 0.1;
+const double SPRING = 0.075;
 const double EQUILIBRIUM = 60.0;
+const double MAX_FORCE = 2.0;
 
 using namespace std;
 
@@ -31,7 +33,7 @@ void Graph::Iterate(unsigned int lockedNodeId)
             d = std::max(0.1, d);
             v /= d;
             
-            double push = CHARGE * 1.f / (d * d);
+            double push = CHARGE * 1. / (d * d);
             push = push > 5 ? 5 : push;
             n0->force += v * push;
             n1->force -= v * push;
@@ -53,9 +55,14 @@ void Graph::Iterate(unsigned int lockedNodeId)
     double tickMovement = 0;
     for (auto n : nodes_)
     {
-        tickMovement += sqrt(n->force.rx() * n->force.rx() + n->force.ry() * n->force.ry());
+        auto len = sqrt(n->force.rx() * n->force.rx() + n->force.ry() * n->force.ry());
+        tickMovement += len;
         if (lockedNodeId != n->id)
+        {
+            if (len > MAX_FORCE)
+                n->force *= (MAX_FORCE / len);
             n->position += n->force;
+        }
         n->force = QPointF();
     }
     
